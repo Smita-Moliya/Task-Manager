@@ -1,0 +1,578 @@
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+
+  --danger: #dc2626;
+  --success: #16a34a;
+
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 600px at 15% 0%, #eaf0ff, transparent 55%),
+              radial-gradient(1200px 600px at 85% 10%, #e9fff5, transparent 55%),
+              var(--bg);
+  color: var(--text);
+}
+
+/* Layout */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.3px;
+}
+
+.muted {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.small { font-size: 13px; }
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+/* ✅ Admin 2-column layout */
+.gridAdmin {
+  grid-template-columns: 420px 1fr;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .gridAdmin {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.cardTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.05s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn.primary {
+  height: 44px;
+  width: 100%;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.btn.primary:hover { background: var(--primary-hover); }
+
+/* Alerts */
+.alert {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 14px;
+}
+
+.alert.error {
+  border-color: rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.06);
+  color: #991b1b;
+}
+
+.alert.success {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.06);
+  color: #166534;
+}
+
+/* Forms */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+input, select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.input:focus {
+  border-color: rgba(37, 99, 235, 0.55);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.fieldErr {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+/* Helper row for UserList header + button */
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Tables */
+.tableWrap {
+  margin-top: 10px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 520px;
+}
+
+.table thead th {
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: #111827;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #fcfcff;
+}
+
+.table tbody tr:hover {
+  background: #f3f6ff;
+}
+
+.emptyCell {
+  text-align: center;
+  color: var(--muted);
+  padding: 18px 12px;
+}
+
+/* Role badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1px solid var(--border);
+  background: #f9fafb;
+  color: #374151;
+}
+
+.badge.admin {
+  border-color: rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.08);
+  color: #1d4ed8;
+}
+
+.badge.user {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.08);
+  color: #166534;
+}
+.formGrid{
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 980px){
+  .formGrid{ grid-template-columns: 1fr; }
+}
+.textarea{
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* status badges */
+.badge.pending{
+  border-color: rgba(234,179,8,.35);
+  background: rgba(234,179,8,.12);
+  color: #92400e;
+}
+.badge.progress{
+  border-color: rgba(37,99,235,.35);
+  background: rgba(37,99,235,.10);
+  color: #1d4ed8;
+}
+.badge.done{
+  border-color: rgba(22,163,74,.35);
+  background: rgba(22,163,74,.10);
+  color: #166534;
+}
+/* --- Task Manager UI --- */
+.taskCard{
+  padding: 18px;
+}
+
+.taskHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.taskHeaderRight{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+@media (max-width: 980px){
+  .taskHeader{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .taskHeaderRight{
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* form grid */
+.taskForm{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr 0.8fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.taskDesc{
+  grid-column: 1 / -1;
+}
+
+.taskCreateBtn{
+  grid-column: 1 / -1;
+  height: 44px;
+}
+
+.textarea{
+  min-height: 90px;
+  resize: vertical;
+}
+
+@media (max-width: 980px){
+  .taskForm{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* table cell styles */
+.taskTitleCell{
+  font-weight: 700;
+  color: #111827;
+}
+.taskSub{
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.taskAssignee{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.avatar{
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(37,99,235,0.10);
+  border: 1px solid rgba(37,99,235,0.18);
+  color: #1d4ed8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 800;
+}
+
+.taskAssigneeName{
+  font-weight: 700;
+}
+
+/* status badges (if you already have, keep the better ones) */
+.badge.pending{
+  border-color: rgba(234,179,8,.35);
+  background: rgba(234,179,8,.12);
+  color: #92400e;
+}
+.badge.progress{
+  border-color: rgba(37,99,235,.35);
+  background: rgba(37,99,235,.10);
+  color: #1d4ed8;
+}
+.badge.done{
+  border-color: rgba(22,163,74,.35);
+  background: rgba(22,163,74,.10);
+  color: #166534;
+}
+/* --- Task Manager UI --- */
+.taskCard{
+  padding: 18px;
+}
+
+.taskHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.taskHeaderRight{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+@media (max-width: 980px){
+  .taskHeader{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .taskHeaderRight{
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* form grid */
+.taskForm{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr 0.8fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.taskDesc{
+  grid-column: 1 / -1;
+}
+
+.taskCreateBtn{
+  grid-column: 1 / -1;
+  height: 44px;
+}
+
+.textarea{
+  min-height: 90px;
+  resize: vertical;
+}
+
+@media (max-width: 980px){
+  .taskForm{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* table cell styles */
+.taskTitleCell{
+  font-weight: 700;
+  color: #111827;
+}
+.taskSub{
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.taskAssignee{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.avatar{
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(37,99,235,0.10);
+  border: 1px solid rgba(37,99,235,0.18);
+  color: #1d4ed8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 800;
+}
+
+.taskAssigneeName{
+  font-weight: 700;
+}
+
+/* status badges (if you already have, keep the better ones) */
+.badge.pending{
+  border-color: rgba(234,179,8,.35);
+  background: rgba(234,179,8,.12);
+  color: #92400e;
+}
+.badge.progress{
+  border-color: rgba(37,99,235,.35);
+  background: rgba(37,99,235,.10);
+  color: #1d4ed8;
+}
+.badge.done{
+  border-color: rgba(22,163,74,.35);
+  background: rgba(22,163,74,.10);
+  color: #166534;
+}
+.topActions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.primarySmall{
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+.primarySmall:hover{
+  background: var(--primary-hover);
+}
+
+.gridAdmin2{
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 980px){
+  .gridAdmin2{
+    grid-template-columns: 1fr 1.2fr;
+    align-items: start;
+  }
+}
+
+.textarea{
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* status badges if not present */
+.badge.pending{
+  border-color: rgba(234,179,8,.35);
+  background: rgba(234,179,8,.12);
+  color: #92400e;
+}
+.badge.progress{
+  border-color: rgba(37,99,235,.35);
+  background: rgba(37,99,235,.10);
+  color: #1d4ed8;
+}
+.badge.done{
+  border-color: rgba(22,163,74,.35);
+  background: rgba(22,163,74,.10);
+  color: #166534;
+}
+button {
+  padding: 8px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+.fieldErr {
+  color: red;
+  font-size: 12px;
+}
