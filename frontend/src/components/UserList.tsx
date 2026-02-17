@@ -1,87 +1,121 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "../api/api";
+import { deleteUser } from "../api/users";
+import { useAuth } from "../auth/useAuth";
 
-type User = {
+type Role = "ADMIN" | "USER";
+
+type UserRow = {
   id: number;
   name: string;
   email: string;
-  role: "ADMIN" | "USER";
+  role: Role;
+  created_at?: string;
 };
 
 export default function UserList() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [msg, setMsg] = useState("");
-  const [busy, setBusy] = useState(false);
+  const { user } = useAuth();
+  const [users, setUsers] = useState<UserRow[]>([]);
+  const [msg, setMsg] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchUsers = async () => {
+  const loadUsers = async () => {
     setMsg("");
-    setBusy(true);
+    setLoading(true);
     try {
       const res = await api.get("/users/");
-      setUsers(res.data.users || []);
-    } catch (err: any) {
-      setMsg(err?.response?.data?.message || "Failed to load users");
+      setUsers(res.data?.users || []);
+    } catch (err) {
+      setMsg("Failed to load users");
     } finally {
-      setBusy(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    loadUsers();
   }, []);
+
+  const onDelete = async (id: number, role: Role) => {
+    setMsg("");
+
+    // safety (optional): don't allow deleting admins
+    if (role === "ADMIN") {
+      setMsg("You cannot delete an ADMIN user.");
+      return;
+    }
+
+    // safety: don't allow deleting self
+    if (user?.id === id) {
+      setMsg("You cannot delete your own account.");
+      return;
+    }
+
+    const ok = window.confirm("Delete this user?");
+    if (!ok) return;
+
+    const res = await deleteUser(id);
+    if (!res.ok) {
+      setMsg(res.message);
+      return;
+    }
+
+    setMsg("User deleted ✅");
+    loadUsers();
+  };
 
   return (
     <div>
-      <div className="rowBetween">
-        <div>
-          <h3 className="cardTitle" style={{ marginBottom: 4 }}>
-            All Users
-          </h3>
-          
+      <h3 style={{ marginBottom: 10 }}>Users</h3>
+
+      {msg && (
+        <div style={{ marginBottom: 10, color: msg.includes("✅") ? "green" : "red" }}>
+          {msg}
         </div>
+      )}
 
-        <button className="btn" onClick={fetchUsers} disabled={busy}>
-          {busy ? "Refreshing..." : "Refresh"}
-        </button>
-      </div>
-
-      {msg && <div className="alert error">{msg}</div>}
-
-      <div className="tableWrap">
-        <table className="table">
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table border={1} cellPadding={10} style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
               <th style={{ width: 80 }}>ID</th>
               <th>Name</th>
               <th>Email</th>
-              <th style={{ width: 140 }}>Role</th>
+              <th style={{ width: 120 }}>Role</th>
+              <th style={{ width: 140 }}>Action</th>
             </tr>
           </thead>
-
           <tbody>
             {users.map((u) => (
               <tr key={u.id}>
                 <td>{u.id}</td>
                 <td>{u.name}</td>
                 <td>{u.email}</td>
+                <td>{u.role}</td>
                 <td>
-                  <span className={`badge ${u.role === "ADMIN" ? "admin" : "user"}`}>
-                    {u.role}
-                  </span>
+                  <button
+                    onClick={() => onDelete(u.id, u.role)}
+                    style={{ cursor: "pointer" }}
+                    disabled={u.role === "ADMIN" || user?.id === u.id}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
 
-            {users.length === 0 && !busy && (
+            {users.length === 0 && (
               <tr>
-                <td colSpan={4} className="emptyCell">
-                  No users found.
+                <td colSpan={5} style={{ textAlign: "center" }}>
+                  No users found
                 </td>
               </tr>
             )}
           </tbody>
         </table>
-      </div>
+      )}
     </div>
   );
 }

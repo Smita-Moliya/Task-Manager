@@ -10,6 +10,7 @@ type FormValues = {
   assignedTo: number | "";
   dueDate: string;
   description: string;
+  files: File[]; // ✅ NEW
 };
 
 export default function TaskCreateForm() {
@@ -32,8 +33,9 @@ export default function TaskCreateForm() {
       "Please select a user",
       (val) => val !== ""
     ),
-    dueDate: Yup.string(), // optional
-    description: Yup.string(), // optional
+    dueDate: Yup.string(),
+    description: Yup.string(),
+    files: Yup.array().of(Yup.mixed<File>()).max(5, "Max 5 files allowed"), // ✅ optional rule
   });
 
   const initialValues: FormValues = {
@@ -41,6 +43,7 @@ export default function TaskCreateForm() {
     assignedTo: "",
     dueDate: "",
     description: "",
+    files: [], // ✅ NEW
   };
 
   return (
@@ -52,15 +55,21 @@ export default function TaskCreateForm() {
         setBusy(true);
 
         try {
-          await api.post("/tasks/", {
-            title: values.title.trim(),
-            description: values.description.trim() || null,
-            assigned_to: values.assignedTo,
-            due_date: values.dueDate || null,
+          // ✅ multipart/form-data
+          const fd = new FormData();
+          fd.append("title", values.title.trim());
+          fd.append("description", values.description.trim());
+          fd.append("assigned_to", String(values.assignedTo));
+          fd.append("due_date", values.dueDate || "");
+
+          values.files.forEach((f) => fd.append("files", f));
+
+          await api.post("/tasks/", fd, {
+            headers: { "Content-Type": "multipart/form-data" },
           });
 
           resetForm();
-          setMsg("Task created ✅");
+          setMsg("Task created + email sent ✅");
         } catch (err: any) {
           setMsg(err?.response?.data?.message || "Create failed ❌");
         } finally {
@@ -111,6 +120,27 @@ export default function TaskCreateForm() {
           <div className="field">
             <label>Description</label>
             <Field as="textarea" className="input textarea" name="description" />
+          </div>
+
+          {/* ✅ NEW: file upload */}
+          <div className="field">
+            <label>Attach Documents</label>
+            <input
+              className="input"
+              type="file"
+              multiple
+              onChange={(e) => {
+                const files = Array.from(e.currentTarget.files || []);
+                setFieldValue("files", files);
+              }}
+            />
+            {/* optional: show chosen files */}
+            {values.files.length > 0 && (
+              <div className="muted small" style={{ marginTop: 6 }}>
+                Selected: {values.files.map((f) => f.name).join(", ")}
+              </div>
+            )}
+            <ErrorMessage name="files" component="div" className="fieldErr" />
           </div>
 
           <button className="btn primary" type="submit" disabled={busy || isSubmitting}>

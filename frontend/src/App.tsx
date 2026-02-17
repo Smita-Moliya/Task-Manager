@@ -6,7 +6,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import AddUserPage from "./pages/AddUserPage";
 import AddTaskPage from "./pages/AddTaskPage";
 import EditTaskPage from "./pages/EditTaskPage";
-
+import SetPassword from "./pages/SetPassword";
 import { useAuth } from "./auth/useAuth";
 
 export default function App() {
@@ -15,7 +15,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-
+      <Route path="/set-password" element={<SetPassword />} />
       {/* Admin Routes */}
       <Route
         path="/admin"

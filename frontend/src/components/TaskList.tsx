@@ -49,7 +49,7 @@ export default function TaskList() {
     setBusy(true);
     setMsg("");
     try {
-      await api.delete(`/tasks/${id}/admin/delete/`);
+      await api.delete(`/tasks/${id}/`);
       setMsg("Deleted ✅");
       await load();
     } catch (err: any) {
