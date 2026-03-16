@@ -1,24 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import { useAuth } from "../auth/useAuth";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 export default function Login() {
-  const { login, token, user } = useAuth();
+  const { login, access, user } = useAuth();
   const navigate = useNavigate();
+  const [apiError, setApiError] = useState<string>("");
 
-  // ✅ keep your old auto-redirect logic (important)
+  // keep your old auto-redirect logic (important)
   useEffect(() => {
-    if (token && user) {
+    if (access && user) {
       navigate(user.role === "ADMIN" ? "/admin" : "/user", { replace: true });
     }
-  }, [token, user, navigate]);
+  }, [access, user, navigate]);
 
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email required"),
-    password: Yup.string().min(4, "Min 4 characters").required("Password required"),
+    password: Yup.string()
+    .min(8, "Min 8 characters")
+    .matches(/[A-Z]/, "Must contain atleast one uppercase")
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, "Must contain at least one special character")
+    .required("Password required"),
   });
 
   
@@ -26,28 +32,35 @@ export default function Login() {
   return (
     <div className="page">
       <div className="card">
-        <h1 className="title">Task System</h1>
+        <h1 className="title">Task Management System</h1>
 
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validationSchema}
+          validateOnChange={false}
+          validateOnBlur={false}
           onSubmit={async (values, { setSubmitting, setStatus }) => {
-            setStatus("");
+            setApiError(""); // clear only when user submits again
+
             try {
               const res = await api.post("/auth/login/", {
-                email: values.email,
+                email: values.email.trim(),
                 password: values.password,
               });
 
               // expected: { token, user: {id,name,email,role} }
-              login(res.data.token, res.data.user);
+              login(res.data.access, res.data.refresh, res.data.user);
 
               // ✅ optional immediate redirect (useEffect will also do it)
               navigate(res.data.user.role === "ADMIN" ? "/admin" : "/user", {
                 replace: true,
               });
             } catch (err: any) {
-              setStatus(err?.response?.data?.message || "Login failed");
+              if (axios.isAxiosError(err)) {
+                setStatus(err.response?.data?.message || "Invalid email or password");
+              } else {
+                setStatus("Login failed");
+              }
             } finally {
               setSubmitting(false);
             }
@@ -59,7 +72,12 @@ export default function Login() {
 
               <div className="field">
                 <label>Email</label>
-                <Field className="input" name="email" placeholder="admin@gmail.com" />
+                <Field 
+                className="input" 
+                name="email" 
+                type="email"
+                autoComplete="off"
+                placeholder="Enter email" />
                 <ErrorMessage name="email" component="div" className="fieldErr" />
               </div>
 
@@ -69,6 +87,7 @@ export default function Login() {
                   className="input"
                   name="password"
                   type="password"
+                  autoComplete="new-password"
                   placeholder="••••••••"
                 />
                 <ErrorMessage name="password" component="div" className="fieldErr" />

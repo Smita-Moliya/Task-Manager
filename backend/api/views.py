@@ -11,19 +11,26 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 from django.core.mail import send_mail,EmailMessage
+from django.http import FileResponse
 
 
-# -----------------------------
-# Helpers: token generation
-# -----------------------------
+ACCESS_MINUTES = 15
+REFRESH_DAYS = 7
+def _make_access(user_id, role):
+    exp = datetime.now(dt_timezone.utc) + timedelta(minutes=ACCESS_MINUTES)
+    return jwt.encode({"user_id": user_id, "role": role, "type": "access", "exp": exp},
+                      settings.JWT_SECRET, algorithm=settings.JWT_ALG)
+
+def _make_refresh(user_id, role):
+    exp = datetime.now(dt_timezone.utc) + timedelta(days=REFRESH_DAYS)
+    return jwt.encode({"user_id": user_id, "role": role, "type": "refresh", "exp": exp},
+                      settings.JWT_SECRET, algorithm=settings.JWT_ALG)
 def _create_invite_token_raw() -> str:
     # random token (safe to put in URL)
     return secrets.token_urlsafe(48)
 
-
-def _hash_token(raw_token: str) -> str:
-    # store only hash in DB (secure)
-    return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
+def _hash_token(raw: str) -> str:
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
 def _send_set_password_email(email: str, raw_token: str):
@@ -90,29 +97,65 @@ def login(request):
 
     if not pw_hash:
         return JsonResponse(
-            {
-                "message": "Password not set yet. Please use the password setup link sent to your email."
-            },
+            {"message": "Password not set yet. Please use the password setup link sent to your email."},
             status=403,
         )
 
     if not bcrypt.checkpw(password.encode("utf-8"), pw_hash.encode("utf-8")):
         return JsonResponse({"message": "Invalid email or password"}, status=401)
 
-    exp = datetime.now(dt_timezone.utc) + timedelta(
-        hours=getattr(settings, "JWT_EXP_HOURS", 6)
-    )
-    token = jwt.encode(
-        {"user_id": user_id, "role": role, "exp": exp},
-        settings.JWT_SECRET,
-        algorithm=settings.JWT_ALG,
-    )
+    
 
+    # 2) Create REFRESH token (long-lived) and save hashed in DB
+    access = _make_access(user_id, role)
+    refresh = _make_refresh(user_id, role)
+    
     return JsonResponse(
-        {"token": token, "user": {"id": user_id, "name": name, "email": email_db, "role": role}},
+        {
+            "access": access,
+            "refresh": refresh,
+            "user": {"id": user_id, "name": name, "email": email_db, "role": role},
+        },
         status=200,
     )
 
+@csrf_exempt
+def refresh_access_token(request):
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    try:
+        body = json.loads(request.body.decode("utf-8") or "{}")
+    except Exception:
+        return JsonResponse({"message": "Invalid JSON"}, status=400)
+
+    refresh = (body.get("refresh") or "").strip()
+    if not refresh:
+        return JsonResponse({"message": "Refresh token required"}, status=400)
+
+    try:
+        payload = jwt.decode(refresh, settings.JWT_SECRET, algorithms=[settings.JWT_ALG])
+
+        if payload.get("type") != "refresh":
+            return JsonResponse({"message": "Invalid refresh token"}, status=401)
+
+        user_id = payload.get("user_id")
+        role = payload.get("role")
+
+        # optional: check user still exists
+        with connection.cursor() as cur:
+            cur.execute("SELECT id FROM users WHERE id=%s", [user_id])
+            if not cur.fetchone():
+                return JsonResponse({"message": "User not found"}, status=401)
+
+        new_access = _make_access(user_id, role)
+
+        return JsonResponse({"access": new_access}, status=200)
+
+    except jwt.ExpiredSignatureError:
+        return JsonResponse({"message": "Refresh token expired"}, status=401)
+    except Exception:
+        return JsonResponse({"message": "Invalid refresh token"}, status=401)
 
 # -----------------------------
 # ADMIN: Create user WITHOUT password + send invite link
@@ -347,23 +390,36 @@ def _fetchall_dict(cur):
     cols = [c[0] for c in cur.description]
     return [dict(zip(cols, row)) for row in cur.fetchall()]
 
+def _row_to_task(r):
+    return {
+        "id": r[0],
+        "title": r[1],
+        "description": r[2],
+        "status": r[3],
+        "assigned_by": r[4],
+        "assigned_to": r[5],
+        "due_date": str(r[6]) if r[6] else None,
+        "created_at": str(r[7]) if r[7] else None,
+        "updated_at": str(r[8]) if r[8] else None,
+        "attachments": [],  # fill later
+    }
 @csrf_exempt
 def tasks(request):
+    # ✅ define once for ALL methods
+    role = getattr(request, "role", None)
+    user_id = getattr(request, "user_id", None)
+
+    # ✅ protect both GET and POST
+    if not role or not user_id:
+        return JsonResponse({"message": "Unauthorized"}, status=401)
 
     # =========================
     # ✅ GET TASKS
     # =========================
     if request.method == "GET":
-        role = getattr(request, "role", None)
-        user_id = getattr(request, "user_id", None)
-
-        if not role or not user_id:
-            return JsonResponse({"message": "Unauthorized"}, status=401)
-
         try:
             with connection.cursor() as cur:
-
-                # ADMIN → see all tasks
+                # 1) fetch tasks
                 if role == "ADMIN":
                     cur.execute("""
                         SELECT id,title,description,status,
@@ -372,7 +428,6 @@ def tasks(request):
                         FROM tasks
                         ORDER BY id DESC
                     """)
-                # USER → only their tasks
                 else:
                     cur.execute("""
                         SELECT id,title,description,status,
@@ -385,10 +440,35 @@ def tasks(request):
 
                 rows = cur.fetchall()
 
+                # ✅ define task_ids
+                task_ids = [r[0] for r in rows]
+
+                # 2) fetch attachments for those tasks
+                attachments_by_task = {}
+                if task_ids:
+                    cur.execute(f"""
+                        SELECT id, task_id, original_name, mime_type, uploaded_at
+                        FROM task_attachments
+                        WHERE task_id IN ({",".join(["%s"] * len(task_ids))})
+                        ORDER BY id ASC
+                    """, task_ids)
+
+                    for a_id, t_id, original_name, mime_type, uploaded_at in cur.fetchall():
+                        attachments_by_task.setdefault(t_id, []).append({
+                            "id": a_id,
+                            "task_id": t_id,
+                            "original_name": original_name,
+                            "mime_type": mime_type,
+                            "uploaded_at": str(uploaded_at) if uploaded_at else None,
+                            "download_url": f"/api/attachments/{a_id}/download/",
+                        })
+
+            # 3) build response
             tasks_list = []
             for r in rows:
+                t_id = r[0]  # ✅ define t_id
                 tasks_list.append({
-                    "id": r[0],
+                    "id": t_id,
                     "title": r[1],
                     "description": r[2],
                     "status": r[3],
@@ -397,6 +477,7 @@ def tasks(request):
                     "due_date": str(r[6]) if r[6] else None,
                     "created_at": str(r[7]) if r[7] else None,
                     "updated_at": str(r[8]) if r[8] else None,
+                    "attachments": attachments_by_task.get(t_id, []),  # ✅ correct
                 })
 
             return JsonResponse({"tasks": tasks_list}, status=200)
@@ -409,10 +490,9 @@ def tasks(request):
     # ✅ CREATE TASK (POST)
     # =========================
     if request.method == "POST":
-        if getattr(request, "role", None) != "ADMIN":
+        if role != "ADMIN":
             return JsonResponse({"message": "Only admin can create tasks"}, status=403)
 
-        # ✅ detect multipart vs JSON
         is_multipart = request.content_type and request.content_type.startswith("multipart/form-data")
 
         if is_multipart:
@@ -441,7 +521,7 @@ def tasks(request):
         if errors:
             return JsonResponse({"message": "Validation error", "errors": errors}, status=400)
 
-        assigned_by = getattr(request, "user_id", None)
+        assigned_by = user_id  # ✅ admin id
 
         try:
             with connection.cursor() as cur:
@@ -453,7 +533,6 @@ def tasks(request):
                     due_date or None
                 ])
 
-                # ✅ get task_id
                 cur.execute("""
                     SELECT id FROM tasks
                     WHERE assigned_by=%s AND assigned_to=%s AND title=%s
@@ -466,14 +545,7 @@ def tasks(request):
                 if not task_id:
                     return JsonResponse({"message": "Task created but task_id not found"}, status=500)
 
-                # ✅ fetch assigned user's email
-                cur.execute("SELECT email FROM users WHERE id=%s", [int(assigned_to)])
-                urow = cur.fetchone()
-                assigned_email = urow[0] if urow else None
-
-                attachment_paths = []
-
-                # ✅ store attachments
+                # ✅ attachments store
                 for f in files:
                     folder = os.path.join(settings.MEDIA_ROOT, "task_attachments", str(task_id))
                     os.makedirs(folder, exist_ok=True)
@@ -490,29 +562,12 @@ def tasks(request):
                         VALUES(%s,%s,%s,%s,%s)
                     """, [task_id, f.name, stored_name, full_path, getattr(f, "content_type", None)])
 
-                    attachment_paths.append(full_path)
-
-            # ✅ send email
-            if assigned_email:
-                task_info = {
-                    "id": task_id,
-                    "title": title,
-                    "description": description,
-                    "due_date": due_date,
-                    "status": "PENDING",
-                }
-                _send_task_assigned_email(assigned_email, task_info, attachment_paths)
-
-            return JsonResponse(
-                {"message": "Task created + email sent ✅", "task_id": task_id, "attachments": len(attachment_paths)},
-                status=201,
-            )
+            return JsonResponse({"message": "Task created ✅", "task_id": task_id}, status=201)
 
         except Exception as e:
             return JsonResponse({"message": "Failed to create task", "detail": str(e)}, status=400)
 
     return JsonResponse({"message": "Method not allowed"}, status=405)
-
 
 @csrf_exempt
 def task_by_id(request, task_id: int):
@@ -701,3 +756,82 @@ def _send_task_assigned_email(to_email: str, task: dict, attachment_paths: list[
             msg.attach_file(p)
 
     msg.send(fail_silently=False)
+
+@csrf_exempt
+def logout(request):
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    try:
+        body = json.loads(request.body.decode("utf-8") or "{}")
+    except:
+        return JsonResponse({"message": "Invalid JSON"}, status=400)
+
+    refresh_raw = (body.get("refresh") or "").strip()
+    if not refresh_raw:
+        return JsonResponse({"message": "Refresh token required"}, status=400)
+
+    refresh_hash = _hash_token(refresh_raw)
+
+    with connection.cursor() as cur:
+        cur.execute("UPDATE refresh_tokens SET is_revoked=TRUE WHERE token_hash=%s", [refresh_hash])
+
+    return JsonResponse({"message": "Logged out"}, status=200)
+
+
+@csrf_exempt
+def download_attachment(request, att_id: int):
+    role = getattr(request, "role", None)
+    user_id = getattr(request, "user_id", None)
+    if not role or not user_id:
+        return JsonResponse({"message": "Unauthorized"}, status=401)
+
+    with connection.cursor() as cur:
+        cur.execute("""
+            SELECT ta.file_path, ta.original_name, t.assigned_to
+            FROM task_attachments ta
+            JOIN tasks t ON t.id = ta.task_id
+            WHERE ta.id=%s
+        """, [att_id])
+        row = cur.fetchone()
+
+    if not row:
+        return JsonResponse({"message": "File not found"}, status=404)
+
+    file_path, original_name, assigned_to = row
+
+    # permission check
+    if role != "ADMIN" and int(assigned_to) != int(user_id):
+        return JsonResponse({"message": "Forbidden"}, status=403)
+
+    if not os.path.exists(file_path):
+        return JsonResponse({"message": "File missing on server"}, status=404)
+
+    resp = FileResponse(open(file_path, "rb"), as_attachment=True, filename=original_name)
+    return resp
+
+def admin_stats(request):
+    if getattr(request, "role", None) != "ADMIN":
+        return JsonResponse({"message": "Only admin"}, status=403)
+
+    with connection.cursor() as cur:
+        # tasks by status
+        cur.execute("""
+            SELECT status, COUNT(*)
+            FROM tasks
+            GROUP BY status
+            ORDER BY status
+        """)
+        by_status = [{"status": r[0], "count": r[1]} for r in cur.fetchall()]
+
+        # tasks by user
+        cur.execute("""
+            SELECT u.name, COUNT(*)
+            FROM tasks t
+            JOIN users u ON u.id = t.assigned_to
+            GROUP BY u.name
+            ORDER BY COUNT(*) DESC
+        """)
+        by_user = [{"name": r[0], "count": r[1]} for r in cur.fetchall()]
+
+    return JsonResponse({"by_status": by_status, "by_user": by_user}, status=200)
