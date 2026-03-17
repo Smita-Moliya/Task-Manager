@@ -1,30 +1,16 @@
 import React, { createContext, useEffect, useMemo, useState } from "react";
+import { AuthUser, AuthContextValue } from "../types/authType";
 
-export type Role = "ADMIN" | "USER";
 
-export type AuthUser = {
-  id: number;
-  name: string;
-  email?: string;
-  role: Role;
-};
-
-type AuthContextValue = {
-  user: AuthUser | null;
-  access: string | null;
-  refresh: string | null;
-  login: (access: string, refresh: string, user: AuthUser) => void;
-  setAccess: (refresh: string | null) => void;
-  logout: () => void;
-};
-
+//This creates a global shared container.
 export const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [access, setAccess] = useState<string | null>(null);
   const [refresh, setRefresh] = useState<string | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
-
+  const [isInitializing, setIsInitializing] = useState(true);
+  
   useEffect(() => {
     const a = localStorage.getItem("access");
     const r = localStorage.getItem("refresh");
@@ -39,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.clear();
       }
     }
+    setIsInitializing(false);
   }, []);
 
  
@@ -61,9 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   };
 
+  //useMemo keeps the same reference until one of dependencies changes.
   const value = useMemo(
-    () => ({ user, access, refresh, login,setAccess, setRefresh, logout }),
-    [user, access, refresh]
+    () => ({ user, access, refresh, isInitializing,  login,setAccess, setRefresh, logout }),
+    [user, access, refresh, isInitializing]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -14,7 +14,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 SECRET_KEY = 'django-insecure-(jd5s9ez1z%yq@t#(sb-m6c&*5ezc1jf222p2z154^&=0^wvb4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -30,16 +30,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt',
     'api',
     
 ]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",  # ← remove/comment out
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -156,3 +157,5 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 ACCESS_TOKEN_EXP_MINUTES = 15
 REFRESH_TOKEN_EXP_DAYS = 7
+
+GOOGLE_CLIENT_ID = "728265130708-htqsdc01l4ug8vj97q2rfa6jo8koq2ro.apps.googleusercontent.com"

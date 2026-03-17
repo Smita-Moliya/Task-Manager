@@ -1,28 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { api } from "../api/api";
-
-type Attachment = {
-  id: number;
-  task_id: number;
-  original_name: string;
-  mime_type: string | null;
-  uploaded_at: string | null;
-  download_url: string; // "/api/attachments/:id/download/"
-};
-
-type Task = {
-  id: number;
-  title: string;
-  description: string | null;
-  status: "PENDING" | "IN_PROGRESS" | "DONE";
-  assigned_by: number;
-  assigned_to: number;
-  due_date: string | null;
-  created_at?: string | null;
-  updated_at?: string | null;
-  attachments?: Attachment[];
-};
+import { Task } from "../types/task";
+import { Attachment } from "../types/task";
 
 export default function MyTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);

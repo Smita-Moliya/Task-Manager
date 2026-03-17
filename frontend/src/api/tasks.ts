@@ -15,3 +15,32 @@ export async function deleteTask(taskId: number) {
     };
   }
 }
+
+
+
+export type TaskPayload = {
+  title: string;
+  description?: string | null;
+  status: string;
+  assigned_to: number;
+  due_date?: string | null;
+  project_id: number;
+};
+
+export async function createTask(payload: TaskPayload) {
+  return api.post("/tasks/create/", payload);
+}
+
+export async function updateTask(taskId: number, payload: Partial<TaskPayload>) {
+  return api.put(`/tasks/${taskId}/update/`, payload);
+}
+
+export async function getTasks(params?: {
+  q?: string;
+  assigned_to?: number;
+  project_id?: number;
+  status?: string;
+  page?: number;
+}) {
+  return api.get("/tasks/", { params });
+}

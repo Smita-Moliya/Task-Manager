@@ -1,153 +1,259 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../api/api";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 
 type User = { id: number; name: string; email: string; role: "ADMIN" | "USER" };
+type Project = { id: number; name: string };
+type Member = { user_id: number; name: string; member_role: string };
 
-type FormValues = {
-  title: string;
-  assignedTo: number | "";
-  dueDate: string;
-  description: string;
-  files: File[]; // ✅ NEW
-};
+export default function CreateTaskForm() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
 
-export default function TaskCreateForm() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [msg, setMsg] = useState("");
+  const [projectId, setProjectId] = useState<string>("");
+
+  const [title, setTitle] = useState("");
+  const [assignedTo, setAssignedTo] = useState<string>("");
+  const [dueDate, setDueDate] = useState<string>("");
+  const [description, setDescription] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+
   const [busy, setBusy] = useState(false);
+  const [loadingProjects, setLoadingProjects] = useState(false);
+  const [loadingMembers, setLoadingMembers] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  async function loadProjects() {
+    setLoadingProjects(true);
+    try {
+      const res = await api.get("/projects/");
+      const list = res.data?.projects || [];
+      setProjects(Array.isArray(list) ? list : []);
+    } catch (e: any) {
+      setProjects([]);
+      setMsg("Failed to load projects");
+    } finally {
+      setLoadingProjects(false);
+    }
+  }
+
+  async function loadMembers(pid: string) {
+    if (!pid) return;
+    setLoadingMembers(true);
+    try {
+      const res = await api.get(`/projects/${pid}/members/`);
+      const list = res.data?.members || [];
+      setMembers(Array.isArray(list) ? list : []);
+    } catch (e: any) {
+      setMembers([]);
+      setMsg("Failed to load project members");
+    } finally {
+      setLoadingMembers(false);
+    }
+  }
 
   useEffect(() => {
-    (async () => {
-      const res = await api.get("/users/");
-      const all: User[] = res.data.users || [];
-      setUsers(all.filter((u) => u.role === "USER"));
-    })();
+    loadProjects();
   }, []);
 
-  const validationSchema = Yup.object({
-    title: Yup.string().trim().required("Title is required"),
-    assignedTo: Yup.mixed<number | "">().test(
-      "assignedTo",
-      "Please select a user",
-      (val) => val !== ""
-    ),
-    dueDate: Yup.string(),
-    description: Yup.string(),
-    files: Yup.array().of(Yup.mixed<File>()).max(5, "Max 5 files allowed"), // ✅ optional rule
-  });
+  useEffect(() => {
+    if (!projectId) {
+      setMembers([]);
+      setAssignedTo("");
+      return;
+    }
+    loadMembers(projectId);
+  }, [projectId]);
 
-  const initialValues: FormValues = {
-    title: "",
-    assignedTo: "",
-    dueDate: "",
-    description: "",
-    files: [], // ✅ NEW
-  };
+  const fileLabel = useMemo(() => {
+    if (!files.length) return "No files chosen";
+    if (files.length === 1) return files[0].name;
+    return `${files.length} files selected`;
+  }, [files]);
+
+  async function createTask() {
+    const t = title.trim();
+
+    if (!projectId) return setMsg("Please select a project");
+    if (!t) return setMsg("Title is required");
+    if (!assignedTo) return setMsg("Please select a project member");
+
+    setBusy(true);
+    setMsg("");
+
+    try {
+      const fd = new FormData();
+
+      fd.append("title", t);
+      fd.append("project_id", projectId);
+      fd.append("assigned_to", assignedTo);
+
+      if (dueDate) fd.append("due_date", dueDate);
+      if (description.trim()) fd.append("description", description.trim());
+
+      files.forEach((f) => fd.append("files", f));
+
+      const res = await api.post("/tasks/", fd);
+
+      setMsg(res.data?.message || "Task created ✅");
+
+      setTitle("");
+      setAssignedTo("");
+      setDueDate("");
+      setDescription("");
+      setFiles([]);
+      setProjectId("");
+      setMembers([]);
+    } catch (e: any) {
+      setMsg(
+        e?.response?.data?.message ||
+          e?.response?.data?.detail ||
+          "Create task failed"
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={async (values, { resetForm, setSubmitting }) => {
-        setMsg("");
-        setBusy(true);
+    <>
+      {msg ? (
+        <div className={`alert ${msg.includes("✅") ? "success" : "error"}`}>
+          {msg}
+        </div>
+      ) : null}
 
-        try {
-          // ✅ multipart/form-data
-          const fd = new FormData();
-          fd.append("title", values.title.trim());
-          fd.append("description", values.description.trim());
-          fd.append("assigned_to", String(values.assignedTo));
-          fd.append("due_date", values.dueDate || "");
+      {/* Project Selection */}
+      <div className="field">
+        <label className="label">Project</label>
+        <select
+          className="input"
+          value={projectId}
+          onChange={(e) => setProjectId(e.target.value)}
+          disabled={busy || loadingProjects}
+        >
+          <option value="">
+            {loadingProjects ? "Loading projects..." : "Select project"}
+          </option>
 
-          values.files.forEach((f) => fd.append("files", f));
+          {projects.map((p) => (
+            <option key={p.id} value={String(p.id)}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-          await api.post("/tasks/", fd, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+      {/* Title */}
+      <div className="field">
+        <label className="label">Title</label>
+        <input
+          className="input"
+          value={title}
+          placeholder="e.g. Update inventory report"
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={busy}
+        />
+      </div>
 
-          resetForm();
-          setMsg("Task created + email sent ✅");
-        } catch (err: any) {
-          setMsg(err?.response?.data?.message || "Create failed ❌");
-        } finally {
-          setBusy(false);
-          setSubmitting(false);
-        }
-      }}
-    >
-      {({ isSubmitting, values, setFieldValue }) => (
-        <Form className="form">
-          {msg && (
-            <div className={`alert ${msg.includes("✅") ? "success" : "error"}`}>
-              {msg}
-            </div>
-          )}
+      {/* Assign member */}
+      <div className="field">
+        <label className="label">Assign To</label>
+        <select
+          className="input"
+          value={assignedTo}
+          onChange={(e) => setAssignedTo(e.target.value)}
+          disabled={busy || loadingMembers || !projectId}
+        >
+          <option value="">
+            {loadingMembers ? "Loading members..." : "Select project member"}
+          </option>
 
-          <div className="field">
-            <label>Title</label>
-            <Field className="input" name="title" />
-            <ErrorMessage name="title" component="div" className="fieldErr" />
-          </div>
+          {members.map((m) => (
+            <option key={m.user_id} value={String(m.user_id)}>
+              {m.name} ({m.member_role})
+            </option>
+          ))}
+        </select>
+      </div>
 
-          <div className="field">
-            <label>Assign To</label>
-            <select
-              className="input"
-              value={values.assignedTo}
-              onChange={(e) => {
-                const v = e.target.value;
-                setFieldValue("assignedTo", v === "" ? "" : Number(v));
-              }}
+      {/* Due Date */}
+      <div className="field">
+        <label className="label">Due Date</label>
+        <input
+          className="input"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          disabled={busy}
+        />
+      </div>
+
+      {/* Attachments */}
+      <div className="field">
+        <label className="label">Attachments</label>
+
+        <input
+          id="taskFiles"
+          type="file"
+          multiple
+          onChange={(e) => setFiles(Array.from(e.target.files || []))}
+          disabled={busy}
+          style={{ display: "none" }}
+        />
+
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <label
+            htmlFor="taskFiles"
+            className="btn ghost"
+            style={{ cursor: busy ? "not-allowed" : "pointer" }}
+          >
+            Choose Files
+          </label>
+
+          <div className="muted small">{fileLabel}</div>
+
+          {files.length ? (
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={() => setFiles([])}
+              disabled={busy}
             >
-              <option value="">Select user</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.email})
-                </option>
-              ))}
-            </select>
-            <ErrorMessage name="assignedTo" component="div" className="fieldErr" />
-          </div>
+              Clear
+            </button>
+          ) : null}
+        </div>
 
-          <div className="field">
-            <label>Due Date</label>
-            <Field className="input" type="date" name="dueDate" />
-          </div>
+        <div className="muted small" style={{ marginTop: 6 }}>
+          You can attach multiple documents.
+        </div>
+      </div>
 
-          <div className="field">
-            <label>Description</label>
-            <Field as="textarea" className="input textarea" name="description" />
-          </div>
+      {/* Description */}
+      <div className="field">
+        <label className="label">Description</label>
+        <textarea
+          className="input"
+          value={description}
+          placeholder="Write task details..."
+          onChange={(e) => setDescription(e.target.value)}
+          disabled={busy}
+          style={{ minHeight: 110, resize: "vertical" }}
+        />
+      </div>
 
-          {/* ✅ NEW: file upload */}
-          <div className="field">
-            <label>Attach Documents</label>
-            <input
-              className="input"
-              type="file"
-              multiple
-              onChange={(e) => {
-                const files = Array.from(e.currentTarget.files || []);
-                setFieldValue("files", files);
-              }}
-            />
-            {/* optional: show chosen files */}
-            {values.files.length > 0 && (
-              <div className="muted small" style={{ marginTop: 6 }}>
-                Selected: {values.files.map((f) => f.name).join(", ")}
-              </div>
-            )}
-            <ErrorMessage name="files" component="div" className="fieldErr" />
-          </div>
-
-          <button className="btn primary" type="submit" disabled={busy || isSubmitting}>
-            {busy ? "Creating..." : "Create Task"}
-          </button>
-        </Form>
-      )}
-    </Formik>
+      <div style={{ marginTop: 14 }}>
+        <button className="btn primary" onClick={createTask} disabled={busy}>
+          {busy ? "Creating..." : "Create Task"}
+        </button>
+      </div>
+    </>
   );
 }

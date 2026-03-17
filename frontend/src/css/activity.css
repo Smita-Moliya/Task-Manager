@@ -1,0 +1,422 @@
+.activityTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.activityItem {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.activityRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.activityDot {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.activityLine {
+  width: 2px;
+  flex: 1;
+  margin-top: 8px;
+  background: color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 999px;
+  min-height: 30px;
+}
+
+.activityCard {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.activityCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.07);
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+}
+
+.activityTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.activityTitleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.activityTaskTitle {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.activityTaskId {
+  color: var(--muted);
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.activityTime {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.activityMessage {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+  word-break: break-word;
+}
+
+.activityTag {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+/* variants */
+.activityDot.assigned,
+.activityTag.assigned {
+  background: color-mix(in srgb, #2563eb 16%, var(--card));
+  color: #1d4ed8;
+  border-color: color-mix(in srgb, #2563eb 25%, var(--border));
+}
+
+.activityDot.updated,
+.activityTag.updated {
+  background: color-mix(in srgb, #7c3aed 16%, var(--card));
+  color: #6d28d9;
+  border-color: color-mix(in srgb, #7c3aed 25%, var(--border));
+}
+
+.activityDot.status,
+.activityTag.status {
+  background: color-mix(in srgb, #f59e0b 16%, var(--card));
+  color: #b45309;
+  border-color: color-mix(in srgb, #f59e0b 25%, var(--border));
+}
+
+.activityDot.attachment,
+.activityTag.attachment {
+  background: color-mix(in srgb, #0ea5e9 16%, var(--card));
+  color: #0369a1;
+  border-color: color-mix(in srgb, #0ea5e9 25%, var(--border));
+}
+
+.activityDot.comment,
+.activityTag.comment {
+  background: color-mix(in srgb, #22c55e 16%, var(--card));
+  color: #15803d;
+  border-color: color-mix(in srgb, #22c55e 25%, var(--border));
+}
+
+.activityDot.danger,
+.activityTag.danger {
+  background: color-mix(in srgb, #ef4444 16%, var(--card));
+  color: #dc2626;
+  border-color: color-mix(in srgb, #ef4444 25%, var(--border));
+}
+
+.activityDot.default,
+.activityTag.default {
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
+  color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 20%, var(--border));
+}
+
+.activityEmpty {
+  border: 1px dashed var(--border);
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  border-radius: 18px;
+  padding: 36px 20px;
+  text-align: center;
+}
+
+.activityEmptyIcon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.activityEmptyTitle {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.activityEmptyText {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .activityItem {
+    grid-template-columns: 36px 1fr;
+    gap: 10px;
+  }
+
+  .activityDot {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .activityTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .activityTaskTitle {
+    font-size: 15px;
+  }
+
+  .activityCard {
+    padding: 12px 14px;
+  }
+}
+
+/* =========================
+   USER ACTIVITY TABLE
+   ========================= */
+.activityDetailText {
+  max-width: 420px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.activityTableWrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+}
+
+.activityTable {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.activityTable thead th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 20px;
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+  border-bottom: 1px solid var(--border);
+}
+
+.activityTable tbody td {
+  padding: 18px 20px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  vertical-align: middle;
+}
+
+.activityTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.activityTable tbody tr:hover {
+  background: color-mix(in srgb, var(--card) 90%, var(--bg));
+}
+
+/* column sizing */
+.activityTable th:nth-child(1),
+.activityTable td:nth-child(1) {
+  width: 240px;
+}
+
+.activityTable th:nth-child(2),
+.activityTable td:nth-child(2) {
+  width: 140px;
+}
+
+.activityTable th:nth-child(4),
+.activityTable td:nth-child(4) {
+  width: 140px;
+}
+
+/* task cell */
+.activityTaskCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activityTaskName {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.activityTaskId {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* details */
+.activityDetailText {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  word-break: break-word;
+}
+
+/* time */
+.activityTimeText {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* event badge */
+.activityEventTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* variants */
+.activityEventTag.assigned {
+  background: color-mix(in srgb, #2563eb 14%, var(--card));
+  color: #1d4ed8;
+  border-color: color-mix(in srgb, #2563eb 24%, var(--border));
+}
+
+.activityEventTag.updated {
+  background: color-mix(in srgb, #7c3aed 14%, var(--card));
+  color: #6d28d9;
+  border-color: color-mix(in srgb, #7c3aed 24%, var(--border));
+}
+
+.activityEventTag.status {
+  background: color-mix(in srgb, #f59e0b 16%, var(--card));
+  color: #b45309;
+  border-color: color-mix(in srgb, #f59e0b 24%, var(--border));
+}
+
+.activityEventTag.attachment {
+  background: color-mix(in srgb, #0ea5e9 14%, var(--card));
+  color: #0369a1;
+  border-color: color-mix(in srgb, #0ea5e9 24%, var(--border));
+}
+
+.activityEventTag.comment {
+  background: color-mix(in srgb, #22c55e 14%, var(--card));
+  color: #15803d;
+  border-color: color-mix(in srgb, #22c55e 24%, var(--border));
+}
+
+.activityEventTag.danger {
+  background: color-mix(in srgb, #ef4444 14%, var(--card));
+  color: #dc2626;
+  border-color: color-mix(in srgb, #ef4444 24%, var(--border));
+}
+
+.activityEventTag.default {
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
+  color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 24%, var(--border));
+}
+
+/* empty state */
+.activityEmpty {
+  border: 1px dashed var(--border);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  border-radius: 18px;
+  padding: 34px 20px;
+  text-align: center;
+}
+
+.activityEmptyTitle {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.activityEmptyText {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .activityTable {
+    min-width: 640px;
+  }
+
+  .activityTable thead th,
+  .activityTable tbody td {
+    padding: 14px 16px;
+  }
+
+  .activityTaskName {
+    font-size: 14px;
+  }
+
+  .activityDetailText {
+    font-size: 13px;
+  }
+
+  .activityTimeText {
+    font-size: 12px;
+  }
+}

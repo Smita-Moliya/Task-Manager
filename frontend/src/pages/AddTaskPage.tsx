@@ -1,24 +1,26 @@
-import { useNavigate } from "react-router-dom";
-import TaskCreateForm from "../components/TaskCreateForm";
+import { Link } from "react-router-dom";
+import CreateTaskForm from "../components/TaskCreateForm";
 
 export default function AddTaskPage() {
-  const navigate = useNavigate();
-
   return (
-    <div className="page">
-      <div className="topbar">
-        <div>
-          <h2 className="heading">Create Task</h2>
-          <p className="muted small">Assign tasks to users</p>
+    <div className="addTaskPage">
+      <div className="addTaskCard">
+        <div className="cardTopRow">
+          <div className="titleBlock">
+            <h2 className="pageTitle">Create Task</h2>
+            <p className="pageSub">
+              Select a project, assign the task to a project member, and attach documents.
+            </p>
+          </div>
+
+          <Link to="/admin/tasks" className="btn ghost">
+            ← Back
+          </Link>
         </div>
 
-        <button className="btn" onClick={() => navigate("/admin")}>
-          ← Back to Dashboard
-        </button>
-      </div>
-
-      <div className="card">
-        <TaskCreateForm />
+        <div className="cardBody">
+          <CreateTaskForm />
+        </div>
       </div>
     </div>
   );

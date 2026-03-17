@@ -1,0 +1,251 @@
+.adminLogoWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminLogo{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:14px;
+
+  background:linear-gradient(135deg,var(--primary),#7c3aed);
+  
+
+  box-shadow:0 12px 24px rgba(37,99,235,0.25);
+}
+
+.adminNavSectionLabel{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:10px 6px;
+}
+
+
+
+.adminNavIcon {
+  width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.adminNavItem{
+  padding:12px 14px;
+  border-radius:14px;
+  font-weight:800;
+  transition:all .15s ease;
+}
+
+.adminNavItem:hover{
+  background:color-mix(in srgb, var(--card) 85%, var(--bg));
+  transform:translateX(2px);
+}
+
+.adminNavItem.active{
+  background:linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary) 18%, transparent),
+    color-mix(in srgb, #7c3aed 16%, transparent)
+  );
+
+  border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+}
+.adminEyebrow {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.adminMainTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  background: var(--card);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+
+.adminTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminSideBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.adminBrandTitle{
+  font-weight:900;
+  font-size:18px;
+  letter-spacing:-0.02em;
+}
+
+.adminBrandSub{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.adminSidebar{
+  width:260px;
+
+  background:
+    radial-gradient(900px 300px at 10% 0%, var(--bgRad1), transparent 60%),
+    radial-gradient(900px 300px at 90% 0%, var(--bgRad2), transparent 60%),
+    color-mix(in srgb, var(--card) 85%, var(--bg));
+
+  backdrop-filter:blur(10px);
+
+  border-right:1px solid var(--border);
+}
+.adminBrand{
+  border-bottom:1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  padding-bottom:14px;
+  margin-bottom:12px;
+}
+
+.userModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.userModalCard {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+  animation: userModalPop 0.18s ease-out;
+}
+
+.userModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.userModalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.userModalClose {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.userModalClose:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--card) 82%, var(--bg));
+  transform: translateY(-1px);
+}
+
+.userModalBody {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+  background: var(--card);
+}
+
+.userModalField label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.userModalField .input,
+.userModalField input,
+.userModalField select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+  color: var(--text);
+  outline: none;
+  transition: all 0.16s ease;
+}
+
+.userModalField .input:focus,
+.userModalField input:focus,
+.userModalField select:focus {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 16%, transparent);
+}
+
+.userModalField select:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+}
+
+.userModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+}
+
+@keyframes userModalPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

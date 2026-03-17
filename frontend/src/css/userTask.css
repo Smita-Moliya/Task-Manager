@@ -1,0 +1,532 @@
+/* =========================
+   USER TASK PAGE
+   ========================= */
+
+.userPage {
+  min-height: 100vh;
+  padding: 24px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bg) 92%, white) 0%,
+    color-mix(in srgb, var(--bg) 82%, var(--card)) 100%
+  );
+}
+
+.userContainer {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* page alert */
+.userPageAlert {
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.08);
+}
+
+/* top alert pills */
+.alertRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+
+.pill.danger {
+  border-color: color-mix(in srgb, #ef4444 35%, var(--border));
+  background: color-mix(in srgb, #ef4444 8%, var(--card));
+  color: #dc2626;
+}
+
+/* controls card */
+.userTasksControlsCard {
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.userTasksControlsCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
+/* controls layout */
+.taskControlsFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.taskControlsSearch {
+  width: 100%;
+}
+
+.taskControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.taskControlsInline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+/* inputs */
+.userTasksControlsCard input,
+.userTasksControlsCard select {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 90%, var(--bg));
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.taskControlsInput {
+  flex: 1;
+  width: 100%;
+  min-width: 280px;
+  max-width: 420px;
+}
+
+.taskControlsSelect {
+  min-width: 150px;
+}
+
+.taskControlsInline .taskControlsInput {
+  flex: 1;
+  min-width: 260px;
+  max-width: 420px;
+}
+
+.taskControlsInline .taskControlsSelect {
+  min-width: 150px;
+}
+
+.taskControlsInput:focus,
+.taskControlsSelect:focus,
+.userTasksControlsCard input:focus,
+.userTasksControlsCard select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+/* main tasks section */
+.userTasksSection {
+  overflow: hidden;
+  margin-top: 4px;
+  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+}
+
+.userTasksHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--card) 96%, white) 0%,
+    color-mix(in srgb, var(--card) 88%, var(--bg)) 100%
+  );
+}
+
+.uiCardHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.uiCardTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.uiCardSub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.userTasksBody {
+  padding: 24px;
+}
+
+/* top badge */
+.uiBadge.uiBadgePrimary,
+.uiBadgePrimary {
+  align-self: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--primary), #3b82f6);
+  color: #fff;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--primary) 24%, transparent);
+}
+
+/* task grid */
+.taskGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+/* task card */
+.taskCard {
+  width: 100%;
+  min-height: 190px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 98%, white) 0%,
+    color-mix(in srgb, var(--card) 90%, var(--bg)) 100%
+  );
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.taskCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  border-color: color-mix(in srgb, var(--primary) 22%, var(--border));
+}
+
+.taskCard:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+.taskCardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.taskCardTitleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.taskTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.taskBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* status colors */
+.uiBadge.uiStatusDone,
+.taskBadge.uiStatusDone {
+  background: color-mix(in srgb, #22c55e 18%, var(--card));
+  color: #15803d;
+}
+
+.uiBadge.uiStatusProgress,
+.taskBadge.uiStatusProgress {
+  background: color-mix(in srgb, #3b82f6 16%, var(--card));
+  color: #1d4ed8;
+}
+
+.uiBadge.uiStatusPending,
+.taskBadge.uiStatusPending {
+  background: color-mix(in srgb, #f59e0b 18%, var(--card));
+  color: #b45309;
+}
+
+.taskDesc {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+  word-break: break-word;
+  overflow: hidden;
+}
+
+.taskDue {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.taskDue b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.taskMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+.taskId {
+  background: color-mix(in srgb, var(--card) 84%, var(--bg));
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* empty state */
+.uiEmpty {
+  padding: 42px 20px;
+  border: 1px dashed color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 96%, white) 0%,
+    color-mix(in srgb, var(--card) 88%, var(--bg)) 100%
+  );
+  text-align: center;
+}
+
+.uiEmptyTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.uiEmptyText {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* optional shared cards */
+.uiCard {
+  border-radius: 20px;
+}
+
+.uiCardBodySm {
+  padding: 18px 20px;
+}
+
+.uiCardBody {
+  padding: 20px;
+}
+
+/* workspace top section */
+.workspaceHero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 32px 24px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.workspaceHeroLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workspaceLabel {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.workspaceTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.workspaceText {
+  margin: 0;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.themeBtn {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+/* responsive */
+@media (max-width: 992px) {
+  .userPage {
+    padding: 18px;
+  }
+
+  .userTasksHeader {
+    padding: 18px 20px;
+  }
+
+  .userTasksBody {
+    padding: 20px;
+  }
+
+  .uiCardTitle {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .taskControls,
+  .taskControlsInline {
+    flex-wrap: wrap;
+  }
+
+  .taskControlsInput,
+  .taskControlsInline .taskControlsInput {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .userPage {
+    padding: 14px;
+  }
+
+  .userContainer {
+    gap: 16px;
+  }
+
+  .userTasksHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .uiBadge.uiBadgePrimary,
+  .uiBadgePrimary {
+    align-self: flex-start;
+  }
+
+  .uiCardTitle {
+    font-size: 18px;
+  }
+
+  .uiCardSub {
+    font-size: 13px;
+  }
+
+  .userTasksControlsCard,
+  .userTasksSection {
+    border-radius: 18px;
+  }
+
+  .userTasksBody,
+  .userTasksHeader {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .taskControlsFilters {
+    flex-direction: column;
+  }
+
+  .taskControlsInput,
+  .taskControlsSelect {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .taskGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .taskCard {
+    min-height: unset;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .alertRow {
+    gap: 8px;
+  }
+
+  .pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .workspaceHero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .themeBtn {
+    align-self: flex-start;
+  }
+}

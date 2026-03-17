@@ -2,37 +2,33 @@ import { useState } from "react";
 import { api } from "../api/api";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { FormValues, MsgType } from "../types/form";
 
-type FormValues = {
-  name: string;
-  email: string;
-};
+function normalizeFieldErrors(data: any): Partial<Record<keyof FormValues, string>> {
+  const src = data?.errors && typeof data.errors === "object" ? data.errors : data;
+  const out: Partial<Record<keyof FormValues, string>> = {};
 
-export default function CreateUserForm() {
-  const [busy, setBusy] = useState(false);
+  for (const key of ["name", "email"] as (keyof FormValues)[]) {
+    const val = src?.[key];
+    if (!val) continue;
+    out[key] = Array.isArray(val) ? val.filter(Boolean).join(", ") : String(val);
+  }
+  return out;
+}
+
+function pickTopMessage(data: any): string {
+  return data?.message || data?.error || data?.detail || data?.non_field_errors?.[0] || "";
+}
+
+export default function CreateUserPage() {
   const [msg, setMsg] = useState("");
-  const [showReset, setShowReset] = useState(false);
-  const [lastEmail, setLastEmail] = useState("");
+  const [msgType, setMsgType] = useState<MsgType>("");
+  const [creating, setCreating] = useState(false);
 
   const validationSchema = Yup.object({
     name: Yup.string().trim().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
-
-  const sendReset = async () => {
-    setMsg("");
-    setBusy(true);
-    try {
-      const res = await api.post("/auth/send-reset-link/", { email: lastEmail });
-      setMsg(res.data?.message || "Reset link sent to email.");
-      setShowReset(false);
-    } catch (err: any) {
-      const data = err?.response?.data;
-      setMsg(data?.error || data?.message || "Failed to send reset link");
-    } finally {
-      setBusy(false);
-    }
-  };
 
   return (
     <Formik<FormValues>
@@ -40,8 +36,7 @@ export default function CreateUserForm() {
       validationSchema={validationSchema}
       onSubmit={async (values, { resetForm, setSubmitting, setErrors }) => {
         setMsg("");
-        setShowReset(false);
-        setBusy(true);
+        setMsgType("");
 
         const payload = {
           name: values.name.trim(),
@@ -49,70 +44,83 @@ export default function CreateUserForm() {
           role: "USER",
         };
 
+        setCreating(true);
+
         try {
           const res = await api.post("/users/create/", payload);
-
           setMsg(res.data?.message || "User created. Link sent to email.");
+          setMsgType("success");
           resetForm();
         } catch (err: any) {
           const status = err?.response?.status;
           const data = err?.response?.data;
 
-          // backend field errors (if any)
-          if (data?.errors && typeof data.errors === "object") {
-            setErrors(data.errors);
-          }
+          const fieldErrors = normalizeFieldErrors(data);
+          if (Object.keys(fieldErrors).length) setErrors(fieldErrors);
 
-          // ✅ handle "user exists" (409)
           if (status === 409) {
-            setMsg(data?.message || "User already exists. Want to reset password?");
-            setShowReset(true);
-            setLastEmail(payload.email);
+            setMsg(pickTopMessage(data) || "User already exists.");
+            setMsgType("warning");
             return;
           }
 
-          setMsg(data?.error || data?.message || "Create failed");
+          setMsg(pickTopMessage(data) || "Create failed");
+          setMsgType("error");
         } finally {
-          setBusy(false);
+          setCreating(false);
           setSubmitting(false);
         }
       }}
     >
       {({ isSubmitting }) => (
-        <Form className="form">
+        <Form className="form createUserForm">
+          <div className="infoBanner createUserBanner">
+            <span className="pill rolePillFixed">Role: USER</span>
+            <div className="bannerText">
+              <span className="hint">Invite link will be emailed to set password.</span>
+            </div>
+          </div>
+
           {msg && (
-            <div className={`alert ${showReset ? "warning" : msg.includes("Link") || msg.includes("created") ? "success" : "error"}`}>
+            <div className={`alert ${msgType || "error"} createUserAlert`}>
               {msg}
             </div>
           )}
 
           <div className="field">
-            <label>Name</label>
-            <Field className="input" name="name" />
+            <label className="label" htmlFor="name">
+              Full Name
+            </label>
+            <Field
+              id="name"
+              className="input createUserInput"
+              name="name"
+              placeholder="e.g. Smita Moliya"
+            />
             <ErrorMessage name="name" component="div" className="fieldErr" />
           </div>
 
           <div className="field">
-            <label>Email</label>
-            <Field className="input" name="email" />
+            <label className="label" htmlFor="email">
+              Email Address
+            </label>
+            <Field
+              id="email"
+              className="input createUserInput"
+              name="email"
+              type="email"
+              placeholder="user@example.com"
+            />
             <ErrorMessage name="email" component="div" className="fieldErr" />
           </div>
 
-          <button className="btn primary" type="submit" disabled={busy || isSubmitting}>
-            {busy ? "Sending..." : "Create User + Send Link"}
+          <button
+            className="btn primary btnFull createUserBtn"
+            type="submit"
+            disabled={creating || isSubmitting}
+          >
+            {creating || isSubmitting ? "Creating..." : "Create User"}
           </button>
-
-          {showReset && (
-            <button
-              className="btn secondary"
-              type="button"
-              onClick={sendReset}
-              disabled={busy}
-              style={{ marginTop: 10 }}
-            >
-              {busy ? "Sending..." : "Send Reset Password Link"}
-            </button>
-          )}
         </Form>
       )}
     </Formik>
