@@ -1,6 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  FiUploadCloud,
+  FiSearch,
+  FiRefreshCw,
+  FiPaperclip,
+  FiDownload,
+  FiFileText,
+  FiAlertTriangle,
+  FiCheckCircle,
+  FiFolder,
+} from "react-icons/fi";
 import { api } from "../../api/api";
 import { AttachmentRow } from "../../types/task";
+import UserPageHeader from "../../pages/user/UserPageHeader";
+import ThemeToggle from "../../components/ThemeToggle";
+import "../../css/userAttachments.css";
 
 type Task = { id: number; title: string };
 
@@ -65,6 +79,8 @@ export default function UserAttachments() {
     );
   }, [items, q]);
 
+  const selectedFilesCount = files?.length || 0;
+
   async function doUpload(duplicateAction?: "keep" | "replace") {
     setMsg("");
 
@@ -91,7 +107,7 @@ export default function UserAttachments() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setMsg(res.data?.message || "Uploaded ✅");
+      setMsg(res.data?.message || "Uploaded successfully ✅");
       setFiles(null);
       setTaskId("");
       setShowDuplicateBox(false);
@@ -106,7 +122,7 @@ export default function UserAttachments() {
         setDuplicateConflicts(data?.conflicts || []);
         setMsg(
           data?.message ||
-          "File already exists. Do you want to keep both files or replace the existing one?"
+            "File already exists. Do you want to keep both files or replace the existing one?"
         );
       } else {
         setShowDuplicateBox(false);
@@ -149,24 +165,67 @@ export default function UserAttachments() {
   }
 
   return (
-    <div>
+    <div className="uaPage">
       {msg ? (
-        <div
-          className={`alert ${msg.includes("✅") ? "success" : "error"}`}
-          style={{ marginBottom: 12 }}
-        >
-          {msg}
+        <div className={`uaAlert ${msg.includes("✅") ? "success" : "error"}`}>
+          <span className="uaAlertIcon">
+            {msg.includes("✅") ? <FiCheckCircle /> : <FiAlertTriangle />}
+          </span>
+          <span>{msg}</span>
         </div>
       ) : null}
 
-      <section className="adminCard uaUploadCard" style={{ marginBottom: 14 }}>
-        <div className="adminCardHead">
+        <UserPageHeader
+          eyebrow="FILES"
+          title="Attachments"
+          subtitle="Upload, manage, search, and download your task files from one place."
+          rightSlot={<ThemeToggle />}
+        />
+      
+
+      <section className="uaHeroStats">
+        <div className="uaStatCard">
+          <div className="uaStatIcon">
+            <FiPaperclip />
+          </div>
+          <div>
+            <div className="uaStatValue">{items.length}</div>
+            <div className="uaStatLabel">Total attachments</div>
+          </div>
+        </div>
+
+        <div className="uaStatCard">
+          <div className="uaStatIcon">
+            <FiFolder />
+          </div>
+          <div>
+            <div className="uaStatValue">{tasks.length}</div>
+            <div className="uaStatLabel">Available tasks</div>
+          </div>
+        </div>
+
+        <div className="uaStatCard">
+          <div className="uaStatIcon">
+            <FiUploadCloud />
+          </div>
+          <div>
+            <div className="uaStatValue">{selectedFilesCount}</div>
+            <div className="uaStatLabel">Selected files</div>
+          </div>
+        </div>
+      </section>
+
+      <section className="adminCard uaUploadCard">
+        <div className="adminCardHead uaSectionHead">
           <div>
             <h3>Upload Attachments</h3>
-            <p className="uaHeadSub">Attach files to a selected task and manage duplicates easily.</p>
+            <p className="uaHeadSub">
+              Choose a task, attach one or more files, and keep your work organized.
+            </p>
           </div>
           <span className="adminChip">Task based</span>
         </div>
+
         <div className="adminCardBody">
           <div className="uaUploadGrid">
             <div className="uaField">
@@ -190,9 +249,8 @@ export default function UserAttachments() {
               </select>
             </div>
 
-            <div className="uaField">
-              <label className="uaLabel">Choose file(s)</label>
-
+            <div className="uaField uaFieldWide">
+              <label className="uaLabel">Choose files</label>
               <label className="uaFilePicker">
                 <input
                   className="uaFileInputHidden"
@@ -205,13 +263,11 @@ export default function UserAttachments() {
                     setMsg("");
                   }}
                 />
-
-                <span className="uaFilePickerBtn">Choose Files</span>
-
+                <span className="uaFilePickerBtn">Browse Files</span>
                 <span className="uaFilePickerText">
                   {files && files.length > 0
                     ? `${files.length} file${files.length > 1 ? "s" : ""} selected`
-                    : "No file chosen"}
+                    : "No files selected"}
                 </span>
               </label>
             </div>
@@ -223,13 +279,14 @@ export default function UserAttachments() {
                 onClick={() => doUpload()}
                 disabled={uploading}
               >
-                {uploading ? "Uploading…" : "Upload files"}
+                <FiUploadCloud />
+                <span>{uploading ? "Uploading..." : "Upload files"}</span>
               </button>
             </div>
           </div>
 
           <div className="uaHint">
-            Files will be uploaded to the selected task and shown in your attachment list below.
+            Uploaded files will be linked to the selected task and shown in the list below.
           </div>
 
           {files && files.length > 0 ? (
@@ -238,41 +295,36 @@ export default function UserAttachments() {
               <div className="uaFileChips">
                 {Array.from(files).map((f, idx) => (
                   <span key={`${f.name}-${idx}`} className="uaFileChip">
-                    {f.name}
+                    <FiFileText />
+                    <span>{f.name}</span>
                   </span>
                 ))}
               </div>
             </div>
           ) : null}
 
-
           {showDuplicateBox ? (
-            <div
-              style={{
-                marginTop: 14,
-                padding: 14,
-                border: "1px solid #e6dcc4",
-                borderRadius: 12,
-                background: "#fff8e8",
-              }}
-            >
-              <div style={{ fontWeight: 600, marginBottom: 8 }}>
-                Some selected files already exist in this task.
+            <div className="uaDuplicateBox">
+              <div className="uaDuplicateTitle">
+                <FiAlertTriangle />
+                <span>Duplicate files detected</span>
               </div>
 
-              <div style={{ marginBottom: 10 }}>
-                Do you want to keep both files or replace the existing ones?
-              </div>
+              <p className="uaDuplicateText">
+                Some selected files already exist for this task. Choose how you want to continue.
+              </p>
 
               {duplicateConflicts.length > 0 ? (
-                <ul style={{ margin: "0 0 12px 18px" }}>
+                <div className="uaDuplicateList">
                   {duplicateConflicts.map((c) => (
-                    <li key={c.existing_attachment_id}>{c.file_name}</li>
+                    <div key={c.existing_attachment_id} className="uaDuplicateItem">
+                      {c.file_name}
+                    </div>
                   ))}
-                </ul>
+                </div>
               ) : null}
 
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <div className="uaDuplicateActions">
                 <button
                   type="button"
                   className="adminBtn adminBtnPrimary"
@@ -288,7 +340,7 @@ export default function UserAttachments() {
                   onClick={() => doUpload("replace")}
                   disabled={uploading}
                 >
-                  Replace
+                  Replace existing
                 </button>
 
                 <button
@@ -305,69 +357,90 @@ export default function UserAttachments() {
         </div>
       </section>
 
-      <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-        <input
-          className="input"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search by file name / task id / task title…"
-          style={{ flex: 1 }}
-        />
-        <button
-          type="button"
-          className="adminBtn adminBtnGhost"
-          onClick={loadAttachments}
-        >
-          Refresh
-        </button>
-      </div>
-
-      {loading ? (
-        <div className="muted" style={{ padding: 10 }}>
-          Loading…
+      <section className="uaToolbar">
+        <div className="uaSearchBox">
+          <FiSearch className="uaSearchIcon" />
+          <input
+            className="uaSearchInput"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search by file name, task id, or task title..."
+          />
         </div>
-      ) : null}
 
-      <section className="adminCard">
-        <div className="adminCardHead">
-          <h3>All Attachments</h3>
+        <button type="button" className="adminBtn adminBtnGhost uaRefreshBtn" onClick={loadAttachments}>
+          <FiRefreshCw />
+          <span>Refresh</span>
+        </button>
+      </section>
+
+      {loading ? <div className="uaLoading">Loading attachments...</div> : null}
+
+      <section className="adminCard uaListCard">
+        <div className="adminCardHead uaSectionHead">
+          <div>
+            <h3>All Attachments</h3>
+            <p className="uaHeadSub">Review all uploaded files and download them anytime.</p>
+          </div>
           <span className="adminChip">{filtered.length}</span>
         </div>
 
         <div className="adminCardBody">
           {filtered.length === 0 ? (
-            <div className="muted">No attachments found.</div>
+            <div className="uaEmptyState">
+              <FiPaperclip />
+              <h4>No attachments found</h4>
+              <p>Try uploading files or changing your search.</p>
+            </div>
           ) : (
-            <div className="tableWrap" style={{ border: "none" }}>
-              <table className="usersTable">
+            <div className="uaTableWrap">
+              <table className="usersTable uaTable">
                 <thead>
                   <tr>
                     <th>ID</th>
                     <th>File</th>
                     <th>Task</th>
                     <th>Uploaded</th>
-                    <th>Download</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((a) => (
                     <tr key={a.id}>
-                      <td>{a.id}</td>
-                      <td>{a.original_name}</td>
                       <td>
-                        #{a.task_id}
-                        {a.task_title ? (
-                          <span className="muted"> — {a.task_title}</span>
-                        ) : null}
+                        <span className="uaIdBadge">#{a.id}</span>
                       </td>
+
+                      <td>
+                        <div className="uaFileCell">
+                          <span className="uaFileCellIcon">
+                            <FiFileText />
+                          </span>
+                          <div className="uaFileMeta">
+                            <div className="uaFileName">{a.original_name}</div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div className="uaTaskCell">
+                          <span className="uaTaskMain">#{a.task_id}</span>
+                          {a.task_title ? (
+                            <span className="uaTaskSub">{a.task_title}</span>
+                          ) : null}
+                        </div>
+                      </td>
+
                       <td>{a.uploaded_at ? String(a.uploaded_at).slice(0, 10) : "—"}</td>
+
                       <td>
                         <button
                           type="button"
-                          className="adminBtn adminBtnGhost"
+                          className="adminBtn adminBtnGhost uaDownloadBtn"
                           onClick={() => handleDownload(a)}
                         >
-                          Download
+                          <FiDownload />
+                          <span>Download</span>
                         </button>
                       </td>
                     </tr>

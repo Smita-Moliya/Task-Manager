@@ -35,8 +35,22 @@ export default function AdminActivityPage() {
   // ui
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
+  const [exportingExcel, setExportingExcel] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   const debounceRef = useRef<number | null>(null);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+        setShowExportMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const params = useMemo(() => {
     return {
@@ -48,6 +62,16 @@ export default function AdminActivityPage() {
       action: action || undefined,
     };
   }, [page, pageSize, q, taskId, actorId, action]);
+
+  // export should use filters only, not pagination
+  const exportParams = useMemo(() => {
+    return {
+      q: q.trim() || undefined,
+      task_id: taskId || undefined,
+      actor_id: actorId || undefined,
+      action: action || undefined,
+    };
+  }, [q, taskId, actorId, action]);
 
   // detect filter changes only (not page)
   const filterKey = useMemo(() => {
@@ -75,6 +99,49 @@ export default function AdminActivityPage() {
       setLoading(false);
     }
   }
+
+  async function downloadLogs(format: "pdf" | "excel") {
+    try {
+      if (format === "pdf") setExportingPdf(true);
+      else setExportingExcel(true);
+
+      const res = await api.get("/admin/activity/export/", {
+        params: {
+          ...exportParams,
+          format,
+        },
+        responseType: "blob",
+      });
+
+      const blob = new Blob([res.data], {
+        type:
+          format === "pdf"
+            ? "application/pdf"
+            : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download =
+        format === "pdf" ? "activity_logs.pdf" : "activity_logs.xlsx";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+      }, 1000);
+    } catch (e: any) {
+      setMsg("Failed to export logs");
+    } finally {
+      if (format === "pdf") setExportingPdf(false);
+      else setExportingExcel(false);
+    }
+  }
+
 
   // Debounce only on filter changes, and reset to page 1
   useEffect(() => {
@@ -122,10 +189,28 @@ export default function AdminActivityPage() {
           <h3 className="logsTitle">Activity Logs</h3>
           <p className="logsSub">Track task events, comments, and attachments.</p>
         </div>
+        <div className="logsActions" ref={exportMenuRef} style={{ position: "relative" }}>
+          <button
+            className="btn primary"
+            onClick={() => setShowExportMenu((v) => !v)}
+            disabled={exportingPdf || exportingExcel || loading}
+          >
+            {exportingPdf || exportingExcel ? "Downloading..." : "Download"}
+          </button>
 
-        <button className="btn ghost logsRefresh" onClick={() => load(params)} disabled={loading}>
-          {loading ? "Refreshing..." : "Refresh"}
-        </button>
+          {showExportMenu && (
+            <div className="exportDropdown">
+              <button className="btn ghost exportItem borderBottom"  >
+                As PDF
+              </button>
+              <button className="btn ghost exportItem borderBottom"  >
+                As Excel
+              </button>
+            </div>
+          )}
+        </div>
+
+
       </div>
 
       <div className="logsFilters">
@@ -150,7 +235,11 @@ export default function AdminActivityPage() {
           onChange={(e) => setActorId(e.target.value.replace(/\D/g, ""))}
         />
 
-        <select className="input logsSelect" value={action} onChange={(e) => setAction(e.target.value)}>
+        <select
+          className="input logsSelect"
+          value={action}
+          onChange={(e) => setAction(e.target.value)}
+        >
           <option value="">All actions</option>
           <option value="TASK_CREATED">TASK_CREATED</option>
           <option value="TASK_UPDATED">TASK_UPDATED</option>
@@ -162,7 +251,11 @@ export default function AdminActivityPage() {
           <option value="ATTACHMENT_DELETED">ATTACHMENT_DELETED</option>
         </select>
 
-        <button className="btn ghost" onClick={clearFilters} disabled={loading || !hasAnyFilter}>
+        <button
+          className="btn ghost"
+          onClick={clearFilters}
+          disabled={loading || !hasAnyFilter}
+        >
           Clear
         </button>
       </div>

@@ -1,94 +1,111 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
 
-//Axios instance (your API “client”)
+const BASE_URL = "http://127.0.0.1:8000/api";
+
 export const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: BASE_URL,
 });
 
-//Request interceptor (attach access token)
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const access = localStorage.getItem("access");
-  config.headers = config.headers ?? ({} as any);
-
-  if (access) {
-    config.headers.Authorization = `Bearer ${access}`;
-  }
-
-  return config;
-});
-
-//built a refresh queue
 let isRefreshing = false;
-let queue: Array<(token: string | null) => void> = [];
+let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void; }[] = [];
 
-//gives the new access token to all waiting requests
-function runQueue(token: string | null) {
-  queue.forEach((cb) => cb(token));
-  queue = [];
+function processQueue(error: unknown, token = null) {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(token);
+    }
+  });
+  failedQueue = [];
 }
 
-api.interceptors.response.use(
-  (res) => res,
-  async (err: AxiosError<any>) => {
-    const original = err.config as any;
-    const status = err.response?.status;
+api.interceptors.request.use(
+  (config) => {
+    const access = localStorage.getItem("access");
 
-    if (status !== 401 || original?._retry) {
-      return Promise.reject(err);
+    config.headers = config.headers || {};
+
+    if (access) {
+      config.headers.Authorization = `Bearer ${access}`;
     }
 
-    original._retry = true;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    const isRefreshCall =
+      originalRequest.url?.includes("/auth/refresh/") ||
+      originalRequest.url === `${BASE_URL}/auth/refresh/`;
+
+    if (error.response?.status !== 401 || isRefreshCall) {
+      return Promise.reject(error);
+    }
+
+    if (originalRequest._retry) {
+      return Promise.reject(error);
+    }
 
     const refresh = localStorage.getItem("refresh");
     if (!refresh) {
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
-      localStorage.removeItem("user");
-      window.location.href = "/";
-      return Promise.reject(err);
+      window.location.href = "/login";
+      return Promise.reject(error);
     }
 
-    // ensure headers exists (important)
-    original.headers = original.headers ?? {};
-
-    //If refresh is already happening → wait in queue
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
-        queue.push((newAccess) => {
-          if (!newAccess) return reject(err);
-
-          // ✅ set latest token and retry
-          original.headers.Authorization = `Bearer ${newAccess}`;
-          resolve(api(original));
-        });
-      });
+        failedQueue.push({ resolve, reject });
+      })
+        .then((token) => {
+          originalRequest._retry = true;
+          originalRequest.headers = originalRequest.headers || {};
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        })
+        .catch((err) => Promise.reject(err));
     }
 
-    //Start refresh flow (only one request does this)
+    originalRequest._retry = true;
     isRefreshing = true;
 
     try {
-      // use same base host; plain axios is fine but ensure correct URL
-      const r = await axios.post("http://127.0.0.1:8000/api/auth/refresh/", { refresh });
+      const response = await axios.post(`${BASE_URL}/auth/refresh/`, {
+        refresh,
+      });
 
-      const newAccess = r.data.access as string;
+      const newAccess = response.data?.access;
+
+      if (!newAccess) {
+        throw new Error("No access token returned from refresh");
+      }
+
       localStorage.setItem("access", newAccess);
+      api.defaults.headers.common.Authorization = `Bearer ${newAccess}`;
 
-      //Release all queued requests
-      runQueue(newAccess);
+      processQueue(null, newAccess);
 
-      //Retry the original failed request
-      original.headers.Authorization = `Bearer ${newAccess}`;
-      return api(original);
-    } 
-    //If refresh fails → logout everything
-    catch (e) {            
-      runQueue(null);
+      originalRequest.headers = originalRequest.headers || {};
+      originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+
+      return api(originalRequest);
+    } catch (refreshError) {
+      processQueue(refreshError, null);
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
-      localStorage.removeItem("user");
-      window.location.href = "/";
-      return Promise.reject(e);
+      window.location.href = "/login";
+      return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
     }

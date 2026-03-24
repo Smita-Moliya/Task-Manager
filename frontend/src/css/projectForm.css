@@ -1,0 +1,392 @@
+/* =========================
+   PROJECT FORM
+   ========================= */
+
+.projectForm {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-sizing: border-box;
+}
+
+/* header */
+
+.projectFormHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.projectFormHeaderText {
+  min-width: 0;
+}
+
+.projectFormEyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.projectFormTitle {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.projectFormSubtitle {
+  margin: 8px 0 0;
+  max-width: 620px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #64748b;
+}
+
+.projectFormHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.projectFormHeaderBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(191, 219, 254, 0.95);
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.projectModalCloseBtn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  background: #ffffff;
+  color: #475569;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.projectModalCloseBtn:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* grid */
+
+.projectFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 18px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.formFieldFull {
+  grid-column: 1 / -1;
+}
+
+.formField label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  padding-left: 2px;
+}
+
+/* input wrappers */
+
+.inputWithIcon,
+.textareaWithIcon {
+  position: relative;
+}
+
+.inputIcon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #64748b;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.inputIconTop {
+  top: 18px;
+  transform: none;
+}
+
+/* form controls */
+
+.projectForm input,
+.projectForm select,
+.projectForm textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid #dbe4f0;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.projectForm input,
+.projectForm select {
+  height: 52px;
+  padding: 0 16px 0 44px;
+}
+
+.projectForm textarea {
+  min-height: 130px;
+  resize: vertical;
+  padding: 14px 16px 14px 44px;
+  line-height: 1.6;
+}
+
+.projectForm input::placeholder,
+.projectForm textarea::placeholder {
+  color: #94a3b8;
+}
+
+.projectForm input:focus,
+.projectForm select:focus,
+.projectForm textarea:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+  background: #ffffff;
+}
+
+.projectForm select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #64748b 50%),
+    linear-gradient(135deg, #64748b 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 14px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.projectForm input[type="date"] {
+  cursor: pointer;
+}
+
+/* error state */
+
+.projectForm .inputError {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.fieldError {
+  font-size: 12px;
+  font-weight: 600;
+  color: #dc2626;
+  padding-left: 2px;
+  margin-top: -2px;
+}
+
+/* footer */
+
+.projectFormFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(226, 232, 240, 0.9);
+  flex-wrap: wrap;
+}
+
+.projectFormHint {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.projectFormActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.projectCancelBtn {
+  min-width: 110px;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid #dbe4f0;
+  background: #ffffff;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.projectCancelBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.projectSubmitBtn,
+.uiButton.uiButtonPrimary.projectSubmitBtn {
+  min-width: 160px;
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.24);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.projectSubmitBtn:hover:not(:disabled),
+.uiButton.uiButtonPrimary.projectSubmitBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 34px rgba(37, 99, 235, 0.3);
+}
+
+.projectCancelBtn:disabled,
+.projectSubmitBtn:disabled,
+.projectModalCloseBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* responsive */
+
+@media (max-width: 900px) {
+  .projectForm {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .projectFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formFieldFull {
+    grid-column: auto;
+  }
+
+  .projectFormTitle {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .projectForm {
+    padding: 18px;
+    gap: 20px;
+    border-radius: 20px;
+  }
+
+  .projectFormHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .projectFormHeaderRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .projectFormHeaderBadge {
+    max-width: calc(100% - 56px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .projectFormFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .projectFormActions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .projectCancelBtn,
+  .projectSubmitBtn,
+  .uiButton.uiButtonPrimary.projectSubmitBtn {
+    width: 100%;
+  }
+}

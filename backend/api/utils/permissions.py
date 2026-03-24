@@ -18,7 +18,7 @@ def ensure_task_access(request, task_id: int):
     if assigned_to is None:
         return JsonResponse({"message": "Task not found"}, status=404)
 
-    if role != "ADMIN" and int(assigned_to) != int(user_id):
+    if role not in ("ADMIN", "SUPERUSER") and int(assigned_to) != int(user_id):
         return JsonResponse({"message": "Forbidden"}, status=403)
 
     return None

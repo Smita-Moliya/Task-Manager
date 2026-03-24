@@ -1,0 +1,402 @@
+.userActivityPage {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.activitySummaryCard,
+.activityTableCard {
+  border-radius: 28px;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 8%, transparent), transparent 34%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card) 98%, white) 0%,
+      color-mix(in srgb, var(--card) 92%, var(--bg)) 100%
+    );
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.activitySummaryCard {
+  padding: 22px 24px;
+}
+
+.activitySummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.activitySummaryItem {
+  min-height: 110px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.activitySummaryItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
+}
+
+.activitySummaryItem span {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.activitySummaryItem strong {
+  font-size: 38px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.activitySummaryItem.neutral {
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+}
+
+.activitySummaryItem.status {
+  background: color-mix(in srgb, #3b82f6 8%, var(--card));
+  border-color: color-mix(in srgb, #3b82f6 20%, var(--border));
+}
+
+.activitySummaryItem.comment {
+  background: color-mix(in srgb, #8b5cf6 8%, var(--card));
+  border-color: color-mix(in srgb, #8b5cf6 20%, var(--border));
+}
+
+.activitySummaryItem.attachment {
+  background: color-mix(in srgb, #22c55e 8%, var(--card));
+  border-color: color-mix(in srgb, #22c55e 20%, var(--border));
+}
+
+.activityTableCard {
+  overflow: hidden;
+}
+
+.activityTableHeader {
+  padding: 24px 24px 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.activityTableTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.activityTableSubtext {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.activityTableHeaderMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.activityHeaderChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.activityTableWrap {
+  overflow-x: auto;
+  padding: 8px 20px 20px;
+}
+
+.activityTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  min-width: 900px;
+}
+
+.activityTable thead th {
+  text-align: left;
+  padding: 0 16px 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.activityTable tbody tr {
+  background: color-mix(in srgb, var(--card) 96%, var(--bg));
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+
+.activityTable tbody td {
+  padding: 18px 16px;
+  vertical-align: middle;
+  border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+}
+
+.activityTable tbody td:first-child {
+  border-left: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-top-left-radius: 18px;
+  border-bottom-left-radius: 18px;
+}
+
+.activityTable tbody td:last-child {
+  border-right: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+.activityTaskCell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 130px;
+}
+
+.activityTaskTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.activityTaskId {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.activityEventBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.activityEventIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.activityEventBadge.status {
+  color: #1d4ed8;
+  background: color-mix(in srgb, #3b82f6 10%, var(--card));
+  border-color: color-mix(in srgb, #3b82f6 18%, var(--border));
+}
+
+.activityEventBadge.comment {
+  color: #7c3aed;
+  background: color-mix(in srgb, #8b5cf6 10%, var(--card));
+  border-color: color-mix(in srgb, #8b5cf6 18%, var(--border));
+}
+
+.activityEventBadge.attachment {
+  color: #15803d;
+  background: color-mix(in srgb, #22c55e 10%, var(--card));
+  border-color: color-mix(in srgb, #22c55e 18%, var(--border));
+}
+
+.activityEventBadge.default {
+  color: var(--text);
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+}
+
+.activityDetailsCell {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+  min-width: 280px;
+  word-break: break-word;
+}
+
+.activityTimeCell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 190px;
+}
+
+.activityTimeRelative {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.activityTimeFull {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.activityEmpty {
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+  border-radius: 16px;
+}
+
+.activityPagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 24px 24px;
+}
+
+.activityPageBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.activityPageBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 20%, var(--border));
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.activityPageBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.activityPageInfo {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.activityPageInfo strong {
+  color: var(--text);
+}
+
+@media (max-width: 1100px) {
+  .activitySummaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .activityTableHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .activityPagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .activityPageBtn {
+    justify-content: center;
+  }
+
+  .activityPageInfo {
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .activitySummaryCard {
+    padding: 16px;
+  }
+
+  .activitySummaryGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .activitySummaryItem {
+    min-height: 92px;
+    padding: 16px;
+  }
+
+  .activitySummaryItem strong {
+    font-size: 32px;
+  }
+
+  .activityTableHeader {
+    padding: 18px 16px 12px;
+  }
+
+  .activityTableWrap {
+    padding: 8px 12px 16px;
+  }
+
+  .activityPagination {
+    padding: 0 16px 16px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .activitySummaryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .activitySummaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .activitySummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.activitySummaryItem.created {
+  background: color-mix(in srgb, #f59e0b 8%, var(--card));
+  border-color: color-mix(in srgb, #f59e0b 20%, var(--border));
+}

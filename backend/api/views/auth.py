@@ -1,63 +1,54 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics
+from rest_framework.response import Response
 
-from api.utils.decorators import require_methods, json_required
 from api.services.auth_service import (
     login_service,
     refresh_access_service,
     logout_service,
 )
-from api.serializers.auth_serializer import LoginSerializer, RefreshTokenSerializer
+from api.serializers.auth_serializer import (
+    LoginSerializer,
+    RefreshTokenSerializer,
+)
 
 
-@csrf_exempt
-@require_methods(["POST"])
-@json_required
-def login(request, body):
-    serializer = LoginSerializer(data=body)
-    if not serializer.is_valid():
-        return JsonResponse(
-            {"message": "Validation error", "errors": serializer.errors},
-            status=400
-        )
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    authentication_classes = []
+    permission_classes = []
 
-    data = serializer.validated_data
-    email = data["email"]
-    password = data["password"]
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    status, payload = login_service(email, password)
-    return JsonResponse(payload, status=status)
+        data = serializer.validated_data
+        status_code, payload = login_service(data["email"], data["password"])
+        return Response(payload, status=status_code)
 
 
-@csrf_exempt
-@require_methods(["POST"])
-@json_required
-def refresh_access_token(request, body):
-    serializer = RefreshTokenSerializer(data=body)
-    if not serializer.is_valid():
-        return JsonResponse(
-            {"message": "Validation error", "errors": serializer.errors},
-            status=400
-        )
+class RefreshAccessTokenView(generics.GenericAPIView):
+    serializer_class = RefreshTokenSerializer
+    authentication_classes = []
+    permission_classes = []
 
-    refresh = serializer.validated_data["refresh"]
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    status, payload = refresh_access_service(refresh)
-    return JsonResponse(payload, status=status)
+        refresh = serializer.validated_data["refresh"]
+        status_code, payload = refresh_access_service(refresh)
+        return Response(payload, status=status_code)
 
 
-@csrf_exempt
-@require_methods(["POST"])
-@json_required
-def logout(request, body):
-    serializer = RefreshTokenSerializer(data=body)
-    if not serializer.is_valid():
-        return JsonResponse(
-            {"message": "Validation error", "errors": serializer.errors},
-            status=400
-        )
+class LogoutView(generics.GenericAPIView):
+    serializer_class = RefreshTokenSerializer
+    authentication_classes = []
+    permission_classes = []
 
-    refresh_raw = serializer.validated_data["refresh"]
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    status, payload = logout_service(refresh_raw)
-    return JsonResponse(payload, status=status)
+        refresh_raw = serializer.validated_data["refresh"]
+        status_code, payload = logout_service(refresh_raw)
+        return Response(payload, status=status_code)

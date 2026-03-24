@@ -1,0 +1,643 @@
+.userProjectsPage {
+  --up-bg-page: transparent;
+
+  --up-title: #0f172a;
+  --up-text: #111827;
+  --up-subtitle: #5f6b7a;
+  --up-muted: #64748b;
+  --up-soft-text: #6b7280;
+
+  --up-search-icon: #64748b;
+  --up-search-bg: rgba(255, 255, 255, 0.92);
+  --up-search-border: #d9e2ef;
+  --up-search-text: #0f172a;
+  --up-search-focus: #4f7cff;
+  --up-search-ring: rgba(79, 124, 255, 0.14);
+  --up-search-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+
+  --up-count-bg: linear-gradient(135deg, #eef4ff 0%, #e7f0ff 100%);
+  --up-count-text: #3155b6;
+  --up-count-border: #d6e3ff;
+
+  --up-alert-border: #fecaca;
+  --up-alert-bg: #fff1f2;
+  --up-alert-text: #b42318;
+
+  --up-card-border: rgba(214, 224, 238, 0.9);
+  --up-card-bg:
+    radial-gradient(circle at top right, rgba(99, 102, 241, 0.06), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  --up-card-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.05),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  --up-card-hover-border: #b9cdf7;
+  --up-card-hover-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+
+  --up-progress-track: #e8eef8;
+  --up-progress-fill: linear-gradient(90deg, #4f7cff 0%, #73a4ff 55%, #8db7ff 100%);
+  --up-progress-text: #667085;
+  --up-progress-strong: #0f172a;
+
+  --up-stat-bg: rgba(248, 251, 255, 0.95);
+  --up-stat-border: #e7eef8;
+  --up-stat-icon-bg: linear-gradient(135deg, #edf4ff 0%, #e3eeff 100%);
+  --up-stat-icon-text: #3557c7;
+  --up-stat-strong: #101828;
+
+  --up-empty-border: #d8e3f2;
+  --up-empty-bg:
+    radial-gradient(circle at top, rgba(99, 102, 241, 0.05), transparent 35%),
+    #fbfdff;
+  --up-empty-icon-bg: linear-gradient(135deg, #eef4ff 0%, #e7f0ff 100%);
+  --up-empty-icon-text: #3155b6;
+
+  --up-skeleton-1: #edf2f8;
+  --up-skeleton-2: #f7f9fc;
+}
+
+:root[data-theme="dark"] .userProjectsPage,
+.dark .userProjectsPage,
+body.dark .userProjectsPage {
+  --up-bg-page: transparent;
+
+  --up-title: #f8fafc;
+  --up-text: #e5e7eb;
+  --up-subtitle: #cbd5e1;
+  --up-muted: #94a3b8;
+  --up-soft-text: #9aa8bc;
+
+  --up-search-icon: #94a3b8;
+  --up-search-bg: rgba(15, 23, 42, 0.88);
+  --up-search-border: rgba(148, 163, 184, 0.16);
+  --up-search-text: #f8fafc;
+  --up-search-focus: #60a5fa;
+  --up-search-ring: rgba(96, 165, 250, 0.16);
+  --up-search-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+
+  --up-count-bg: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.16) 0%,
+    rgba(96, 165, 250, 0.1) 100%
+  );
+  --up-count-text: #bfdbfe;
+  --up-count-border: rgba(96, 165, 250, 0.18);
+
+  --up-alert-border: rgba(248, 113, 113, 0.28);
+  --up-alert-bg: rgba(127, 29, 29, 0.22);
+  --up-alert-text: #fecaca;
+
+  --up-card-border: rgba(148, 163, 184, 0.14);
+  --up-card-bg:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(17, 24, 39, 0.96) 0%, rgba(15, 23, 42, 0.96) 100%);
+  --up-card-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.02) inset;
+  --up-card-hover-border: rgba(96, 165, 250, 0.28);
+  --up-card-hover-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.42),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+
+  --up-progress-track: #1e293b;
+  --up-progress-fill: linear-gradient(90deg, #3b82f6 0%, #60a5fa 55%, #7dd3fc 100%);
+  --up-progress-text: #cbd5e1;
+  --up-progress-strong: #f8fafc;
+
+  --up-stat-bg: rgba(15, 23, 42, 0.72);
+  --up-stat-border: rgba(148, 163, 184, 0.12);
+  --up-stat-icon-bg: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.16) 0%,
+    rgba(96, 165, 250, 0.12) 100%
+  );
+  --up-stat-icon-text: #93c5fd;
+  --up-stat-strong: #f8fafc;
+
+  --up-empty-border: rgba(148, 163, 184, 0.2);
+  --up-empty-bg:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 35%),
+    #111827;
+  --up-empty-icon-bg: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.16) 0%,
+    rgba(96, 165, 250, 0.1) 100%
+  );
+  --up-empty-icon-text: #93c5fd;
+
+  --up-skeleton-1: #1e293b;
+  --up-skeleton-2: #334155;
+}
+
+.userProjectsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 24px;
+  background: var(--up-bg-page);
+}
+
+.userProjectsToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.userProjectsSearch {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 500px;
+}
+
+.userProjectsSearchIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 17px;
+  color: var(--up-search-icon);
+  pointer-events: none;
+}
+
+.userProjectsSearch input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px 0 46px;
+  border-radius: 16px;
+  border: 1px solid var(--up-search-border);
+  background: var(--up-search-bg);
+  box-shadow: var(--up-search-shadow);
+  backdrop-filter: blur(10px);
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--up-search-text);
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease,
+    background 0.22s ease;
+}
+
+.userProjectsSearch input::placeholder {
+  color: var(--up-muted);
+  font-weight: 500;
+}
+
+.userProjectsSearch input:focus {
+  border-color: var(--up-search-focus);
+  box-shadow:
+    var(--up-search-shadow),
+    0 0 0 4px var(--up-search-ring);
+  transform: translateY(-1px);
+}
+
+.userProjectsCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--up-count-border);
+  background: var(--up-count-bg);
+  color: var(--up-count-text);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
+}
+
+.userProjectsAlert {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--up-alert-border);
+  background: var(--up-alert-bg);
+  color: var(--up-alert-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.userProjectsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 20px;
+}
+
+.userProjectCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 290px;
+  padding: 22px;
+  border: 1px solid var(--up-card-border);
+  border-radius: 24px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--up-card-bg);
+  box-shadow: var(--up-card-shadow);
+  overflow: hidden;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.userProjectCard::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4f7cff 0%, #73a4ff 60%, #9bc2ff 100%);
+  opacity: 0.9;
+}
+
+.userProjectCard:hover {
+  transform: translateY(-6px);
+  border-color: var(--up-card-hover-border);
+  box-shadow: var(--up-card-hover-shadow);
+}
+
+.userProjectCardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.userProjectTitleWrap {
+  min-width: 0;
+}
+
+.userProjectTitleWrap h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--up-text);
+  text-transform: capitalize;
+  word-break: break-word;
+  letter-spacing: -0.02em;
+}
+
+.userProjectTitleWrap p {
+  margin: 10px 0 0;
+  color: var(--up-soft-text);
+  font-size: 14px;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.projectStatusBadge {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.projectStatusBadge.pending {
+  background: #fff7ed;
+  color: #b45309;
+  border-color: #fed7aa;
+}
+
+.projectStatusBadge.inprogress {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.projectStatusBadge.done {
+  background: #ecfdf3;
+  color: #027a48;
+  border-color: #bbf7d0;
+}
+
+.projectStatusBadge.hold {
+  background: #fdf2f8;
+  color: #be185d;
+  border-color: #fbcfe8;
+}
+
+:root[data-theme="dark"] .projectStatusBadge.pending,
+.dark .projectStatusBadge.pending,
+body.dark .projectStatusBadge.pending {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.18);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .projectStatusBadge.inprogress,
+.dark .projectStatusBadge.inprogress,
+body.dark .projectStatusBadge.inprogress {
+  background: rgba(59, 130, 246, 0.16);
+  color: #93c5fd;
+  border-color: rgba(96, 165, 250, 0.18);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .projectStatusBadge.done,
+.dark .projectStatusBadge.done,
+body.dark .projectStatusBadge.done {
+  background: rgba(34, 197, 94, 0.16);
+  color: #86efac;
+  border-color: rgba(74, 222, 128, 0.18);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .projectStatusBadge.hold,
+.dark .projectStatusBadge.hold,
+body.dark .projectStatusBadge.hold {
+  background: rgba(236, 72, 153, 0.16);
+  color: #f9a8d4;
+  border-color: rgba(244, 114, 182, 0.18);
+  box-shadow: none;
+}
+
+.userProjectProgressBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.userProjectProgressHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--up-progress-text);
+}
+
+.userProjectProgressHead strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--up-progress-strong);
+}
+
+.userProjectProgressTrack {
+  width: 100%;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--up-progress-track);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.userProjectProgressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--up-progress-fill);
+  box-shadow: 0 4px 10px rgba(79, 124, 255, 0.25);
+}
+
+.userProjectStats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.userProjectStat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 18px;
+  background: var(--up-stat-bg);
+  border: 1px solid var(--up-stat-border);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.userProjectCard:hover .userProjectStat {
+  border-color: color-mix(in srgb, var(--up-stat-border) 72%, #8fb2ff 28%);
+}
+
+.userProjectStatIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--up-stat-icon-bg);
+  color: var(--up-stat-icon-text);
+  font-size: 16px;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+:root[data-theme="dark"] .userProjectStatIcon,
+.dark .userProjectStatIcon,
+body.dark .userProjectStatIcon {
+  box-shadow: none;
+}
+
+.userProjectStat strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--up-stat-strong);
+  line-height: 1.35;
+}
+
+.userProjectStat p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--up-soft-text);
+  line-height: 1.45;
+}
+
+.userProjectsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  border: 1px dashed var(--up-empty-border);
+  border-radius: 26px;
+  background: var(--up-empty-bg);
+  text-align: center;
+  padding: 36px 20px;
+}
+
+.userProjectsEmptyIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--up-empty-icon-bg);
+  color: var(--up-empty-icon-text);
+  font-size: 30px;
+  margin-bottom: 16px;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.08);
+}
+
+.userProjectsEmpty h3 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--up-title);
+  letter-spacing: -0.02em;
+}
+
+.userProjectsEmpty p {
+  margin: 8px 0 0;
+  max-width: 430px;
+  color: var(--up-soft-text);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.userProjectCardSkeleton {
+  pointer-events: none;
+}
+
+.skeleton {
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    var(--up-skeleton-1) 20%,
+    var(--up-skeleton-2) 50%,
+    var(--up-skeleton-1) 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeletonTitle {
+  width: 52%;
+  height: 22px;
+}
+
+.skeletonText {
+  width: 90%;
+  height: 14px;
+}
+
+.skeletonText.short {
+  width: 70%;
+}
+
+.skeletonBar {
+  width: 100%;
+  height: 10px;
+  margin-top: 18px;
+  border-radius: 999px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 992px) {
+  .userProjectsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .userProjectsPage {
+    padding: 16px;
+    gap: 18px;
+  }
+
+  .userProjectsToolbar {
+    align-items: stretch;
+  }
+
+  .userProjectsSearch {
+    max-width: 100%;
+  }
+
+  .userProjectsSearch input {
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  .userProjectsCount {
+    width: fit-content;
+  }
+
+  .userProjectsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .userProjectCard {
+    min-height: unset;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .userProjectCardTop {
+    flex-direction: column;
+  }
+
+  .projectStatusBadge {
+    align-self: flex-start;
+  }
+
+  .userProjectTitleWrap h3 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .userProjectsPage {
+    padding: 12px;
+  }
+
+  .userProjectsSearch input {
+    font-size: 13px;
+    padding-left: 42px;
+  }
+
+  .userProjectStat {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .userProjectStatIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    font-size: 15px;
+  }
+
+  .userProjectsEmpty {
+    min-height: 280px;
+    padding: 28px 16px;
+  }
+
+  .userProjectsEmptyIcon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    font-size: 26px;
+  }
+}

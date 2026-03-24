@@ -1,41 +1,23 @@
 from rest_framework import serializers
+import os
 
+ALLOWED_EXTENSIONS = {".pdf", ".doc", ".docx", ".png", ".jpg", ".jpeg"}
 
 class AttachmentUploadSerializer(serializers.Serializer):
     files = serializers.ListField(
         child=serializers.FileField(),
-        required=True,
         allow_empty=False
     )
 
-    def validate_files(self, value):
-        if not value:
-            raise serializers.ValidationError("No files uploaded")
+    def validate_files(self, files):
+        if not files:
+            raise serializers.ValidationError("Please select at least one file.")
 
-        if len(value) > 5:
-            raise serializers.ValidationError("Maximum 5 files allowed")
-
-        allowed_types = {
-            "application/pdf",
-            "image/png",
-            "image/jpeg",
-            "image/jpg",
-        }
-
-        max_size = 10 * 1024 * 1024  # 10 MB
-
-        for f in value:
-            content_type = getattr(f, "content_type", None)
-            size = getattr(f, "size", 0)
-
-            if content_type not in allowed_types:
+        for f in files:
+            ext = os.path.splitext(f.name)[1].lower()
+            if ext not in ALLOWED_EXTENSIONS:
                 raise serializers.ValidationError(
-                    f"Unsupported file type: {f.name}"
+                    f"{f.name} has invalid file format. Allowed formats: PDF, DOC, DOCX, PNG, JPG, JPEG."
                 )
 
-            if size > max_size:
-                raise serializers.ValidationError(
-                    f"File too large: {f.name}. Max 10 MB allowed"
-                )
-
-        return value
+        return files

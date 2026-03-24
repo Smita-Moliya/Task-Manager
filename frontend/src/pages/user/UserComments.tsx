@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../../api/api";
 import { CommentRow } from "../../types/dashboard";
-type Task = { id: number; title: string };
+import UserPageHeader from "../../pages/user/UserPageHeader";
+import ThemeToggle from "../../components/ThemeToggle";
+import "../../css/userComments.css";
+
+type Task = {
+  id: number;
+  title: string;
+};
 
 export default function UserComments() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -18,8 +25,11 @@ export default function UserComments() {
     try {
       const res = await api.get("/tasks/");
       const list = Array.isArray(res.data) ? res.data : res.data?.tasks || [];
-      const t = (Array.isArray(list) ? list : []).map((x: any) => ({ id: x.id, title: x.title }));
-      setTasks(t);
+      const mapped = (Array.isArray(list) ? list : []).map((x: any) => ({
+        id: x.id,
+        title: x.title,
+      }));
+      setTasks(mapped);
     } catch {
       setTasks([]);
     }
@@ -28,6 +38,7 @@ export default function UserComments() {
   async function loadComments() {
     setMsg("");
     setLoading(true);
+
     try {
       const res = await api.get("/me/comments/");
       const list = res.data?.comments ?? [];
@@ -48,8 +59,11 @@ export default function UserComments() {
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
     if (!s) return items;
+
     return items.filter((c) =>
-      `${c.comment} ${c.task_id} ${c.task_title || ""} ${c.user_name}`.toLowerCase().includes(s)
+      `${c.comment} ${c.task_id} ${c.task_title || ""} ${c.user_name}`
+        .toLowerCase()
+        .includes(s)
     );
   }, [items, q]);
 
@@ -60,6 +74,7 @@ export default function UserComments() {
       setMsg("Please select a task first.");
       return;
     }
+
     const comment = text.trim();
     if (!comment) {
       setMsg("Comment is required.");
@@ -71,7 +86,7 @@ export default function UserComments() {
       await api.post(`/tasks/${taskId}/comments/`, { comment });
       setMsg("Comment added ✅");
       setText("");
-      setTaskId(""); 
+      setTaskId("");
       await loadComments();
     } catch (e: any) {
       setMsg(e?.response?.data?.message || "Failed to add comment");
@@ -81,102 +96,111 @@ export default function UserComments() {
   }
 
   return (
-    <div>
+    <div className="commentsPage">
       {msg ? (
-        <div className={`alert ${msg.includes("✅") ? "success" : "error"}`} style={{ marginBottom: 12 }}>
+        <div
+          className={`commentsAlert ${
+            msg.includes("✅") ? "success" : "error"
+          }`}
+        >
           {msg}
         </div>
       ) : null}
 
-      {/* ✅ Add Comment Box */}
-      <section className="adminCard" style={{ marginBottom: 14 }}>
-        <div className="adminCardHead">
+      <UserPageHeader
+        eyebrow="DISCUSSIONS"
+        title="Comments"
+        subtitle="Read conversations, follow updates, and add your comments to stay aligned with the team."
+        rightSlot={<ThemeToggle />}
+      />
+
+      <section className="commentsCard">
+        <div className="commentsCardHead">
           <h3>Add Comment</h3>
-          <span className="adminChip">Task based</span>
+          <span className="commentsChip">Task based</span>
         </div>
 
-        <div className="adminCardBody">
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <select
-              className="input"
-              value={taskId}
-              onChange={(e) => setTaskId(e.target.value ? Number(e.target.value) : "")}
-              style={{ minWidth: 260 }}
-            >
-              <option value="">Select task…</option>
-              {tasks.map((t) => (
-                <option key={t.id} value={t.id}>
-                  #{t.id} — {t.title}
-                </option>
-              ))}
-            </select>
+        <div className="commentInputRow">
+          <select
+            className="commentsInput commentsSelect"
+            value={taskId}
+            onChange={(e) =>
+              setTaskId(e.target.value ? Number(e.target.value) : "")
+            }
+          >
+            <option value="">Select task...</option>
+            {tasks.map((t) => (
+              <option key={t.id} value={t.id}>
+                #{t.id} — {t.title}
+              </option>
+            ))}
+          </select>
 
-            <input
-              className="input"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Write your comment…"
-              style={{ flex: 1, minWidth: 260 }}
-            />
+          <input
+            className="commentsInput commentsCommentBox"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Write your comment..."
+          />
 
-            <button className="adminBtn adminBtnPrimary" onClick={addComment} disabled={posting}>
-              {posting ? "Posting…" : "Post"}
-            </button>
-          </div>
+          <button
+            className="commentsBtnPrimary"
+            onClick={addComment}
+            disabled={posting}
+          >
+            {posting ? "Posting..." : "Post"}
+          </button>
+        </div>
 
-          <div className="muted" style={{ marginTop: 8, fontSize: 12 }}>
-            Note: comment will be added to the selected task.
-          </div>
+        <div className="commentsNote">
+          Note: comment will be added to the selected task.
         </div>
       </section>
 
-      {/* Search + Refresh */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+      <div className="commentsSearchRow">
         <input
-          className="input"
+          className="commentsInput commentsSearchInput"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search comment / task title / task id / user name…"
-          style={{ flex: 1 }}
+          placeholder="Search comment / task / user..."
         />
-        <button className="adminBtn adminBtnGhost" onClick={loadComments}>
+        <button className="commentsBtnGhost" onClick={loadComments}>
           Refresh
         </button>
       </div>
 
-      {loading ? <div className="muted" style={{ padding: 10 }}>Loading…</div> : null}
+      {loading ? <div className="commentsMuted">Loading...</div> : null}
 
-      {/* List */}
-      <section className="adminCard">
-        <div className="adminCardHead">
+      <section className="commentsCard">
+        <div className="commentsCardHead">
           <h3>All Comments</h3>
-          <span className="adminChip">{filtered.length}</span>
+          <span className="commentsChip">{filtered.length}</span>
         </div>
 
-        <div className="adminCardBody">
+        <div className="commentList">
           {filtered.length === 0 ? (
-            <div className="muted">No comments found.</div>
+            <div className="commentsMuted">No comments found.</div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {filtered.map((c) => (
-                <div key={c.id} className="adminCard" style={{ padding: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                    <div style={{ fontWeight: 700 }}>
-                      #{c.task_id}{c.task_title ? ` — ${c.task_title}` : ""}
-                    </div>
-                    <div className="muted" style={{ fontSize: 12 }}>
-                      {c.created_at ? String(c.created_at).slice(0, 16).replace("T", " ") : "—"}
-                    </div>
+            filtered.map((c) => (
+              <div key={c.id} className="commentItem">
+                <div className="commentTop">
+                  <div className="commentTitle">
+                    #{c.task_id}
+                    {c.task_title ? ` — ${c.task_title}` : ""}
                   </div>
 
-                  <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
-                    By: {c.user_name}
+                  <div className="commentDate">
+                    {c.created_at
+                      ? String(c.created_at).slice(0, 16).replace("T", " ")
+                      : "—"}
                   </div>
-
-                  <div style={{ marginTop: 10 }}>{c.comment}</div>
                 </div>
-              ))}
-            </div>
+
+                <div className="commentUser">By {c.user_name}</div>
+
+                <div className="commentText">{c.comment}</div>
+              </div>
+            ))
           )}
         </div>
       </section>

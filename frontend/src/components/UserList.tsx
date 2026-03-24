@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { api } from "../api/api";
 import { deleteUser, updateUser } from "../api/users";
 import { useAuth } from "../auth/useAuth";
@@ -6,6 +7,8 @@ import { Role, UserRow, Props } from "../types/user";
 
 export default function UserList({ page, pageSize, onTotalPages }: Props) {
   const { user } = useAuth();
+  const location = useLocation();
+
   const [users, setUsers] = useState<UserRow[]>([]);
   const [msg, setMsg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,6 +23,9 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
   });
   const [saving, setSaving] = useState(false);
 
+  const isSuperuserUsersPage = location.pathname.startsWith("/superuser/users");
+  const isSuperuserAdminsPage = location.pathname.startsWith("/superuser/admins");
+
   const loadUsers = async () => {
     setMsg("");
     setLoading(true);
@@ -29,7 +35,17 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
       });
 
       const list = (res.data?.items ?? res.data?.users) as UserRow[] | undefined;
-      setUsers(Array.isArray(list) ? list : []);
+      const rawUsers = Array.isArray(list) ? list : [];
+
+      let scopedUsers = rawUsers;
+
+      if (isSuperuserAdminsPage) {
+        scopedUsers = rawUsers.filter((u) => u.role === "ADMIN");
+      } else if (isSuperuserUsersPage) {
+        scopedUsers = rawUsers.filter((u) => u.role === "USER");
+      }
+
+      setUsers(scopedUsers);
 
       const tp = Number(res.data?.total_pages || 1);
       onTotalPages?.(Number.isFinite(tp) && tp > 0 ? tp : 1);
@@ -45,7 +61,7 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
   useEffect(() => {
     loadUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize]);
+  }, [page, pageSize, location.pathname]);
 
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -143,6 +159,12 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
     }
   };
 
+  const emptyText = isSuperuserAdminsPage
+    ? "No admins found"
+    : isSuperuserUsersPage
+    ? "No users found"
+    : "No users found";
+
   return (
     <div>
       {msg ? (
@@ -190,7 +212,6 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
               <tbody>
                 {filteredUsers.map((u) => {
                   const disableDelete = u.role === "ADMIN" || user?.id === u.id;
-                  const disableEdit = false;
 
                   return (
                     <tr key={u.id}>
@@ -200,7 +221,11 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
                         <span className="usersEmail">{u.email}</span>
                       </td>
                       <td>
-                        <span className={`rolePill ${u.role === "ADMIN" ? "admin" : "user"}`}>
+                        <span
+                          className={`rolePill ${
+                            u.role === "ADMIN" ? "admin" : "user"
+                          }`}
+                        >
                           {u.role}
                         </span>
                       </td>
@@ -213,8 +238,8 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
                               user?.id === u.id
                                 ? "Edit your profile"
                                 : u.role === "ADMIN"
-                                  ? "Edit admin details"
-                                  : "Edit user"
+                                ? "Edit admin details"
+                                : "Edit user"
                             }
                           >
                             Edit
@@ -228,8 +253,8 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
                               u.role === "ADMIN"
                                 ? "Admins cannot be deleted"
                                 : user?.id === u.id
-                                  ? "You cannot delete yourself"
-                                  : "Delete user"
+                                ? "You cannot delete yourself"
+                                : "Delete user"
                             }
                           >
                             Delete
@@ -243,7 +268,7 @@ export default function UserList({ page, pageSize, onTotalPages }: Props) {
                 {filteredUsers.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="emptyCell">
-                      {users.length === 0 ? "No users found" : "No matching users"}
+                      {users.length === 0 ? emptyText : "No matching users"}
                     </td>
                   </tr>
                 ) : null}

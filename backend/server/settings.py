@@ -14,8 +14,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 SECRET_KEY = 'django-insecure-(jd5s9ez1z%yq@t#(sb-m6c&*5ezc1jf222p2z154^&=0^wvb4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
@@ -141,6 +140,11 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+    "EXCEPTION_HANDLER": "api.exception_handler.custom_exception_handler"
+
 }
 
 FRONTEND_URL = "http://localhost:5173"

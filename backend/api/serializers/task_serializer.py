@@ -19,7 +19,6 @@ class FlexibleDateField(serializers.Field):
 
         s = s.replace(" ", "")
 
-        # ISO datetime like 2026-02-28T00:00:00.000Z
         if len(s) >= 10 and s[4:5] == "-" and s[7:8] == "-":
             try:
                 return datetime.date.fromisoformat(s[:10])
@@ -75,7 +74,10 @@ class TaskCreateSerializer(serializers.Serializer):
 class TaskUpdateSerializer(serializers.Serializer):
     title = serializers.CharField(required=True, allow_blank=False, max_length=255)
     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    status = serializers.ChoiceField(choices=["PENDING", "IN_PROGRESS", "DONE"], required=True)
+    status = serializers.ChoiceField(
+        choices=["PENDING", "IN_PROGRESS", "DONE"],
+        required=True,
+    )
     assigned_to = serializers.IntegerField(required=True)
     due_date = FlexibleDateField(required=False, allow_null=True)
 
@@ -92,7 +94,10 @@ class TaskUpdateSerializer(serializers.Serializer):
 
 
 class TaskStatusUpdateSerializer(serializers.Serializer):
-    status = serializers.ChoiceField(choices=["PENDING", "IN_PROGRESS", "DONE"], required=True)
+    status = serializers.ChoiceField(
+        choices=["PENDING", "IN_PROGRESS", "DONE"],
+        required=True,
+    )
 
     def validate_status(self, value):
         return value.strip().upper()

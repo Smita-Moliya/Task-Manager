@@ -2266,3 +2266,98 @@ tbody tr:hover{background: var(--row-hover);}
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.logsHeadActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.logsDownloadWrap {
+  position: relative;
+}
+
+.logsDownloadBtn {
+  min-width: 110px;
+}
+
+.logsDownloadMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid var(--border, #dbe3f0);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+  padding: 8px;
+  z-index: 30;
+}
+
+.logsDownloadItem {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.logsDownloadItem:hover {
+  background: #f5f7fb;
+}
+.logsHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.logsActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ===== Export Dropdown ===== */
+
+.logsActions {
+  position: relative;
+}
+
+.exportDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* dropdown items */
+.exportItem {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 0;
+}
+
+.borderBottom {
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+/* hover */
+.exportItem:hover {
+  background: rgba(0, 0, 0, 0.03);
+}

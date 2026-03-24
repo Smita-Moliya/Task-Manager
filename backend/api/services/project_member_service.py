@@ -3,14 +3,12 @@ from api.db import project_db, project_member_db
 
 VALID_MEMBER_ROLES = {"LEAD", "DEVELOPER", "TESTER", "MEMBER"}
 
-def add_project_members_service(project_id, body, actor_id):
-    print("=== ADD PROJECT MEMBERS SERVICE HIT ===")
-    print("BODY IN SERVICE:", body)
 
+def add_project_members_service(*, request, project_id, data):
     if not project_db.project_exists(project_id):
         return {"ok": False, "message": "Project not found"}
 
-    members = body.get("members")
+    members = data.get("members")
     if not isinstance(members, list) or not members:
         return {"ok": False, "message": "members list is required"}
 
@@ -29,9 +27,6 @@ def add_project_members_service(project_id, body, actor_id):
 
         user_id = item.get("user_id")
         member_role = str(item.get("member_role") or "MEMBER").strip().upper()
-
-        print("PARSED USER ID:", user_id)
-        print("PARSED MEMBER ROLE:", member_role)
 
         if not user_id:
             errors.append({"user_id": None, "message": "user_id is required"})
@@ -65,9 +60,7 @@ def add_project_members_service(project_id, body, actor_id):
     return {"ok": True, "added": added, "errors": errors}
 
 
-def list_project_members_service(project_id):
-    print("=== LIST PROJECT MEMBERS SERVICE HIT ===")
-
+def list_project_members_service(*, project_id):
     if not project_db.project_exists(project_id):
         return {"ok": False, "message": "Project not found"}
 
@@ -78,12 +71,8 @@ def list_project_members_service(project_id):
         print("LIST PROJECT MEMBERS SERVICE ERROR:", repr(e))
         raise
 
-def remove_project_member_service(project_id, user_id, actor_id):
-    print("=== REMOVE PROJECT MEMBER SERVICE HIT ===")
-    print("PROJECT ID:", project_id)
-    print("USER ID:", user_id)
-    print("ACTOR ID:", actor_id)
 
+def remove_project_member_service(*, request, project_id, user_id):
     if not project_db.project_exists(project_id):
         return {"ok": False, "message": "Project not found"}
 
@@ -95,5 +84,3 @@ def remove_project_member_service(project_id, user_id, actor_id):
         return {"ok": False, "message": "Could not remove member"}
 
     return {"ok": True}
-
-

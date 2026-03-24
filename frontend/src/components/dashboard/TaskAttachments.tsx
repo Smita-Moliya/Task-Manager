@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
+import {
+  FiAlertTriangle,
+  FiFile,
+  FiFileText,
+  FiImage,
+  FiPaperclip,
+  FiRefreshCw,
+  FiUpload,
+  FiXCircle,
+} from "react-icons/fi";
 import { api } from "../../api/api";
 import { Attachment } from "../../types/dashboard";
-import "../../css/userTask.css";
+
 type DuplicateConflict = {
   existing_attachment_id: number;
   file_name: string;
@@ -90,86 +100,176 @@ export default function TaskAttachments({
     setMsg("Upload cancelled");
   }
 
+  function getFileIcon(name?: string) {
+    const value = (name || "").toLowerCase();
+
+    if (
+      value.endsWith(".png") ||
+      value.endsWith(".jpg") ||
+      value.endsWith(".jpeg") ||
+      value.endsWith(".gif") ||
+      value.endsWith(".webp") ||
+      value.endsWith(".svg")
+    ) {
+      return <FiImage />;
+    }
+
+    if (
+      value.endsWith(".pdf") ||
+      value.endsWith(".doc") ||
+      value.endsWith(".docx") ||
+      value.endsWith(".txt")
+    ) {
+      return <FiFileText />;
+    }
+
+    return <FiFile />;
+  }
+
   return (
-    <div>
+    <div className="taskModalAttachments">
       {msg ? (
-        <div className={`alert ${msg.includes("✅") ? "success" : "error"}`}>
+        <div
+          className={`taskModalInlineAlert ${
+            msg.includes("✅") ? "success" : "error"
+          }`}
+        >
           {msg}
         </div>
       ) : null}
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-        <input
-          type="file"
-          onChange={(e) => {
-            setFile(e.target.files?.[0] || null);
-            setShowDuplicateBox(false);
-            setDuplicateConflicts([]);
-            setMsg("");
-          }}
-        />
+      <div className="taskModalUploadPanel">
+        <div className="taskModalUploadLeft">
+          <label className="taskModalFilePicker">
+            <input
+              type="file"
+              onChange={(e) => {
+                setFile(e.target.files?.[0] || null);
+                setShowDuplicateBox(false);
+                setDuplicateConflicts([]);
+                setMsg("");
+              }}
+            />
+            <span className="taskModalFilePickerBtn">
+              <FiPaperclip />
+              Choose File
+            </span>
+            <span className="taskModalFileName">
+              {file ? file.name : "No file selected"}
+            </span>
+          </label>
+        </div>
 
-        <button className="btn" onClick={() => doUpload()} disabled={busy}>
-          {busy ? "Uploading..." : "Upload"}
+        <button
+          type="button"
+          className="taskModalPrimaryBtn"
+          onClick={() => doUpload()}
+          disabled={busy}
+        >
+          {busy ? (
+            <>
+              <FiRefreshCw className="spin" />
+              Uploading...
+            </>
+          ) : (
+            <>
+              <FiUpload />
+              Upload
+            </>
+          )}
         </button>
       </div>
 
       {showDuplicateBox ? (
-        <div
-          style={{
-            marginTop: 12,
-            padding: 12,
-            border: "1px solid #ddd",
-            borderRadius: 10,
-            background: "#fff8e8",
-          }}
-        >
-          <div style={{ marginBottom: 10, fontWeight: 600 }}>
-            This file already exists. Do you want to keep both files or replace the existing one?
+        <div className="taskModalDuplicateBox">
+          <div className="taskModalDuplicateHead">
+            <span className="taskModalDuplicateIcon">
+              <FiAlertTriangle />
+            </span>
+            <div>
+              <h4>Duplicate file detected</h4>
+              <p>
+                This file already exists. Choose whether to keep both files or
+                replace the existing one.
+              </p>
+            </div>
           </div>
 
           {duplicateConflicts.length > 0 ? (
-            <ul style={{ marginTop: 0, paddingLeft: 18 }}>
+            <div className="taskModalDuplicateList">
               {duplicateConflicts.map((c) => (
-                <li key={c.existing_attachment_id}>{c.file_name}</li>
+                <div
+                  key={c.existing_attachment_id}
+                  className="taskModalDuplicateItem"
+                >
+                  <FiFile />
+                  <span>{c.file_name}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : null}
 
-          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button className="btn" onClick={() => doUpload("keep")} disabled={busy}>
+          <div className="taskModalDuplicateActions">
+            <button
+              type="button"
+              className="taskModalPrimaryBtn"
+              onClick={() => doUpload("keep")}
+              disabled={busy}
+            >
               Keep both
             </button>
 
-            <button className="btn" onClick={() => doUpload("replace")} disabled={busy}>
+            <button
+              type="button"
+              className="taskModalSecondaryBtn"
+              onClick={() => doUpload("replace")}
+              disabled={busy}
+            >
+              <FiRefreshCw />
               Replace
             </button>
 
-            <button className="btn" onClick={cancelDuplicateFlow} disabled={busy}>
+            <button
+              type="button"
+              className="taskModalGhostBtn"
+              onClick={cancelDuplicateFlow}
+              disabled={busy}
+            >
+              <FiXCircle />
               Cancel
             </button>
           </div>
         </div>
       ) : null}
 
-      <div style={{ marginTop: 10 }}>
+      <div className="taskModalListWrap">
         {items.length === 0 ? (
-          <div className="muted">No attachments</div>
+          <div className="taskModalEmptyState">No attachments uploaded yet.</div>
         ) : (
-          <ul>
+          <div className="taskModalAttachmentList">
             {items.map((a) => (
-              <li key={a.id}>
-                <a
-                  href={`http://127.0.0.1:8000${a.download_url}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {a.original_name}
-                </a>
-                {a.uploaded_at ? <span className="muted"> • {a.uploaded_at}</span> : null}
-              </li>
+              <a
+                key={a.id}
+                className="taskModalAttachmentItem"
+                href={`http://127.0.0.1:8000${a.download_url}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="taskModalAttachmentIcon">
+                  {getFileIcon(a.original_name)}
+                </span>
+
+                <span className="taskModalAttachmentContent">
+                  <span className="taskModalAttachmentName">
+                    {a.original_name}
+                  </span>
+                  <span className="taskModalAttachmentMeta">
+                    {a.uploaded_at || "Uploaded file"}
+                  </span>
+                </span>
+              </a>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

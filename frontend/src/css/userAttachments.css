@@ -1,0 +1,447 @@
+.uaPage {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.uaAlert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.uaAlert.success {
+  background: color-mix(in srgb, #22c55e 10%, var(--card));
+  color: #15803d;
+}
+
+.uaAlert.error {
+  background: color-mix(in srgb, #ef4444 10%, var(--card));
+  color: #b91c1c;
+}
+
+.uaAlertIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.uaHeroStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.uaStatCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, var(--card), color-mix(in srgb, var(--card) 82%, #eef4ff));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.uaStatIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: color-mix(in srgb, var(--primary, #4f46e5) 14%, white);
+  color: var(--primary, #4f46e5);
+  flex-shrink: 0;
+}
+
+.uaStatValue {
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.uaStatLabel {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.uaUploadCard,
+.uaListCard {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.uaSectionHead {
+  align-items: flex-start;
+}
+
+.uaHeadSub {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.uaUploadGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.uaField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.uaFieldWide {
+  min-width: 0;
+}
+
+.uaLabel {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.uaInput {
+  min-height: 50px;
+  border-radius: 14px;
+}
+
+.uaFilePicker {
+  min-height: 52px;
+  border: 1px dashed color-mix(in srgb, var(--primary, #4f46e5) 30%, var(--border));
+  background: color-mix(in srgb, var(--card) 88%, #f6f8ff);
+  border-radius: 16px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.uaFilePicker:hover {
+  border-color: var(--primary, #4f46e5);
+  transform: translateY(-1px);
+}
+
+.uaFileInputHidden {
+  display: none;
+}
+
+.uaFilePickerBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+}
+
+.uaFilePickerText {
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.uaActionCell {
+  display: flex;
+  align-items: end;
+}
+
+.uaUploadBtn {
+  min-height: 52px;
+  min-width: 170px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 14px;
+}
+
+.uaHint {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.uaSelectedFiles {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 88%, #f8faff);
+}
+
+.uaSelectedFilesTitle {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.uaFileChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.uaFileChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary, #4f46e5) 10%, white);
+  border: 1px solid color-mix(in srgb, var(--primary, #4f46e5) 20%, var(--border));
+  font-size: 0.9rem;
+  max-width: 100%;
+}
+
+.uaDuplicateBox {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid #f2c98a;
+  background: linear-gradient(180deg, #fff9ec, #fff5df);
+}
+
+.uaDuplicateTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  color: #9a5b00;
+  margin-bottom: 10px;
+}
+
+.uaDuplicateText {
+  margin: 0 0 12px;
+  color: #7a5b23;
+}
+
+.uaDuplicateList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.uaDuplicateItem {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid #efd5a2;
+  font-size: 0.9rem;
+}
+
+.uaDuplicateActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.uaToolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.uaSearchBox {
+  position: relative;
+  flex: 1;
+}
+
+.uaSearchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.uaSearchInput {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px 0 42px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  box-shadow: var(--shadow);
+}
+
+.uaSearchInput:focus {
+  border-color: var(--primary, #4f46e5);
+}
+
+.uaRefreshBtn {
+  min-height: 52px;
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+}
+
+.uaLoading {
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.uaTableWrap {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.uaTable thead th {
+  background: linear-gradient(180deg, #eef3ff, #e8eefb);
+  font-weight: 800;
+}
+
+.uaFileCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.uaFileCellIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--primary, #4f46e5) 10%, white);
+  color: var(--primary, #4f46e5);
+  flex-shrink: 0;
+}
+
+.uaFileMeta {
+  min-width: 0;
+}
+
+.uaFileName {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.uaTaskCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.uaTaskMain {
+  font-weight: 700;
+}
+
+.uaTaskSub {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.uaIdBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary, #4f46e5) 10%, white);
+  color: var(--primary, #4f46e5);
+  font-weight: 700;
+}
+
+.uaDownloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 12px;
+}
+
+.uaEmptyState {
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  gap: 10px;
+}
+
+.uaEmptyState svg {
+  font-size: 34px;
+  opacity: 0.8;
+}
+
+.uaEmptyState h4 {
+  margin: 0;
+  color: var(--text);
+}
+
+.uaEmptyState p {
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .uaUploadGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .uaActionCell {
+    align-items: stretch;
+  }
+
+  .uaUploadBtn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .uaHeroStats {
+    grid-template-columns: 1fr;
+  }
+
+  .uaToolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .uaRefreshBtn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .uaFilePicker {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .uaFilePickerBtn {
+    width: 100%;
+  }
+}

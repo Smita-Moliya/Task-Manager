@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import "../../css/userActitvity.css";
+import "../../css/userActivity.css";
 type ActivityItem = {
   id: number;
   task_id: number;

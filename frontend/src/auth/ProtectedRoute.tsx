@@ -1,26 +1,51 @@
+import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { Role } from "../types/authType";
+import { hasPageAccess, hasPermission } from "../utils/access";
+import { getFirstAllowedRoute } from "../utils/routeAccess";
+
+type ProtectedRouteProps = {
+  allow?: Role[];
+  pageKey?: string;
+  permission?: string;
+  children: React.ReactNode;
+};
 
 export default function ProtectedRoute({
   allow,
+  pageKey,
+  permission,
   children,
-}: {
-  allow: Role[];
-  children: React.ReactNode;
-}) {
-  const { user, access, refresh, isInitializing } = useAuth();
+}: ProtectedRouteProps) {
+  const { user, access, isInitializing, pages, permissions } = useAuth();
 
-  if (isInitializing) return null; // or loader
+  if (isInitializing) {
+    return null;
+  }
 
-  if (!user) return <Navigate to="/" replace />;
+  if (!user || !access) {
+    return <Navigate to="/" replace />;
+  }
 
-  if (!access && refresh) return <>{children}</>;
+  if (allow && !allow.includes(user.role)) {
+    return <Navigate to={getFirstAllowedRoute(user.role, pages)} replace />;
+  }
 
-  if (!access) return <Navigate to="/" replace />;
+  if (
+    user.role !== "SUPERUSER" &&
+    pageKey &&
+    !hasPageAccess(pages, pageKey)
+  ) {
+    return <Navigate to={getFirstAllowedRoute(user.role, pages)} replace />;
+  }
 
-  if (!allow.includes(user.role)) {
-    return <Navigate to={user.role === "ADMIN" ? "/admin" : "/user"} replace />;
+  if (
+    user.role !== "SUPERUSER" &&
+    permission &&
+    !hasPermission(permissions, permission)
+  ) {
+    return <Navigate to={getFirstAllowedRoute(user.role, pages)} replace />;
   }
 
   return <>{children}</>;

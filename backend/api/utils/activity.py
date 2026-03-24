@@ -38,6 +38,5 @@ def log_activity(
         actor_id=actor_id,
         action=action,
         message=message,
-        project_id=project_id,
         meta=meta,
     )

@@ -4,7 +4,13 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FormValues, MsgType } from "../types/form";
 
-function normalizeFieldErrors(data: any): Partial<Record<keyof FormValues, string>> {
+type CreateUserFormProps = {
+  defaultRole?: "USER" | "ADMIN";
+};
+
+function normalizeFieldErrors(
+  data: any
+): Partial<Record<keyof FormValues, string>> {
   const src = data?.errors && typeof data.errors === "object" ? data.errors : data;
   const out: Partial<Record<keyof FormValues, string>> = {};
 
@@ -13,17 +19,29 @@ function normalizeFieldErrors(data: any): Partial<Record<keyof FormValues, strin
     if (!val) continue;
     out[key] = Array.isArray(val) ? val.filter(Boolean).join(", ") : String(val);
   }
+
   return out;
 }
 
 function pickTopMessage(data: any): string {
-  return data?.message || data?.error || data?.detail || data?.non_field_errors?.[0] || "";
+  return (
+    data?.message ||
+    data?.error ||
+    data?.detail ||
+    data?.non_field_errors?.[0] ||
+    ""
+  );
 }
 
-export default function CreateUserPage() {
+export default function CreateUserForm({
+  defaultRole = "USER",
+}: CreateUserFormProps) {
   const [msg, setMsg] = useState("");
   const [msgType, setMsgType] = useState<MsgType>("");
   const [creating, setCreating] = useState(false);
+
+  const normalizedRole = defaultRole === "ADMIN" ? "ADMIN" : "USER";
+  const isAdmin = normalizedRole === "ADMIN";
 
   const validationSchema = Yup.object({
     name: Yup.string().trim().required("Name is required"),
@@ -41,14 +59,17 @@ export default function CreateUserPage() {
         const payload = {
           name: values.name.trim(),
           email: values.email.trim().toLowerCase(),
-          role: "USER",
+          role: normalizedRole,
         };
 
         setCreating(true);
 
         try {
           const res = await api.post("/users/create/", payload);
-          setMsg(res.data?.message || "User created. Link sent to email.");
+          setMsg(
+            res.data?.message ||
+              `${isAdmin ? "Admin" : "User"} created. Link sent to email.`
+          );
           setMsgType("success");
           resetForm();
         } catch (err: any) {
@@ -56,10 +77,15 @@ export default function CreateUserPage() {
           const data = err?.response?.data;
 
           const fieldErrors = normalizeFieldErrors(data);
-          if (Object.keys(fieldErrors).length) setErrors(fieldErrors);
+          if (Object.keys(fieldErrors).length) {
+            setErrors(fieldErrors);
+          }
 
           if (status === 409) {
-            setMsg(pickTopMessage(data) || "User already exists.");
+            setMsg(
+              pickTopMessage(data) ||
+                `${isAdmin ? "Admin" : "User"} already exists.`
+            );
             setMsgType("warning");
             return;
           }
@@ -75,9 +101,11 @@ export default function CreateUserPage() {
       {({ isSubmitting }) => (
         <Form className="form createUserForm">
           <div className="infoBanner createUserBanner">
-            <span className="pill rolePillFixed">Role: USER</span>
+            <span className="pill rolePillFixed">Role: {normalizedRole}</span>
             <div className="bannerText">
-              <span className="hint">Invite link will be emailed to set password.</span>
+              <span className="hint">
+                Invite link will be emailed to set password.
+              </span>
             </div>
           </div>
 
@@ -119,7 +147,11 @@ export default function CreateUserPage() {
             type="submit"
             disabled={creating || isSubmitting}
           >
-            {creating || isSubmitting ? "Creating..." : "Create User"}
+            {creating || isSubmitting
+              ? "Creating..."
+              : isAdmin
+              ? "Create Admin"
+              : "Create User"}
           </button>
         </Form>
       )}

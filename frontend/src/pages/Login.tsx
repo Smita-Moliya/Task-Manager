@@ -6,19 +6,18 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import GoogleLoginButton from "../components/GoggleLoginButton";
-import "../css/login.css";
+import "../../src/css/login.css";
+import { getFirstAllowedRoute } from "../utils/routeAccess";
 
 export default function Login() {
-  const { login, access, user, isInitializing } = useAuth();
-  const navigate = useNavigate();
+  const { login, access, user, pages, isInitializing } = useAuth(); const navigate = useNavigate();
   const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     if (!isInitializing && access && user) {
-      navigate(user.role === "ADMIN" ? "/admin" : "/user", { replace: true });
+      navigate(getFirstAllowedRoute(user.role, pages), { replace: true });
     }
-  }, [isInitializing, access, user, navigate]);
-
+  }, [isInitializing, access, user, pages, navigate]);
   if (isInitializing) return null;
 
   const validationSchema = Yup.object({
@@ -83,7 +82,6 @@ export default function Login() {
               <span />
             </div>
           </div>
-          
         </section>
 
         <section className="authFormWrap">
@@ -107,7 +105,14 @@ export default function Login() {
                     email: values.email.trim(),
                     password: values.password,
                   });
-                  login(res.data.access, res.data.refresh, res.data.user);
+
+                  login(
+                    res.data.access,
+                    res.data.refresh,
+                    res.data.user,
+                    res.data.permissions || {},
+                    res.data.pages || {}
+                  );
                 } catch (err: any) {
                   if (axios.isAxiosError(err)) {
                     setApiError(err.response?.data?.message || "Invalid email or password");
@@ -166,7 +171,13 @@ export default function Login() {
                   <div className="loginGoogle">
                     <GoogleLoginButton
                       onSuccess={(data) => {
-                        login(data.access, data.refresh, data.user);
+                        login(
+                          data.access,
+                          data.refresh,
+                          data.user,
+                          data.permissions || {},
+                          data.pages || {}
+                        );
                       }}
                     />
                   </div>

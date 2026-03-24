@@ -252,3 +252,31 @@ def list_attachments_for_tasks(task_ids: List[int]):
             WHERE task_id = ANY(%s)
         """, [task_ids])
         return cur.fetchall()
+    
+
+
+def list_tasks_for_user(user_id: int):
+    query = """
+        SELECT
+            t.id,
+            t.title,
+            t.description,
+            t.status,
+            t.due_date,
+            p.name AS project_name,
+            u.name AS assigned_to_name
+        FROM tasks t
+        LEFT JOIN projects p ON p.id = t.project_id
+        LEFT JOIN users u ON u.id = t.assigned_to
+        WHERE t.assigned_to = %s
+        ORDER BY
+            CASE WHEN t.due_date IS NULL THEN 1 ELSE 0 END,
+            t.due_date ASC,
+            t.id DESC
+    """
+    with connection.cursor() as cur:
+        cur.execute(query, [user_id])
+        columns = [col[0] for col in cur.description]
+        rows = cur.fetchall()
+
+    return [dict(zip(columns, row)) for row in rows]    

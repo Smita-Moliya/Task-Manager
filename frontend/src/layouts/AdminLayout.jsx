@@ -1,19 +1,18 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useMemo } from "react";
 import { useAuth } from "../auth/useAuth";
 import ThemeToggle from "../components/ThemeToggle";
 import "../css/adminLayout.css";
-import {
-  FiUsers,
-  FiCheckSquare,
-  FiBarChart2,
-  FiFileText,
-  FiLogOut,
-  FiShield,
-  FiFolder,
-} from "react-icons/fi";
+import { FiLogOut, FiShield } from "react-icons/fi";
+import { adminSidebarItems } from "../config/sidebarItems";
+import { getVisibleSidebarItems } from "../utils/sidebar";
 
 export default function AdminLayout() {
-  const { user, logout } = useAuth();
+  const { user, logout, pages } = useAuth();
+
+  const visibleNavItems = useMemo(() => {
+    return getVisibleSidebarItems(adminSidebarItems, pages, user?.role === "SUPERUSER");
+  }, [pages, user?.role]);
 
   return (
     <div className="adminShell">
@@ -26,7 +25,9 @@ export default function AdminLayout() {
           </div>
 
           <div className="adminBrandText">
-            <div className="adminBrandTitle">TaskFlow Admin</div>
+            <div className="adminBrandTitle">
+              {user?.role === "SUPERUSER" ? "TaskFlow Super Admin" : "TaskFlow Admin"}
+            </div>
             <div className="adminBrandSub">{user?.name || "Administrator"}</div>
           </div>
         </div>
@@ -34,45 +35,18 @@ export default function AdminLayout() {
         <div className="adminNavSectionLabel">Main Menu</div>
 
         <nav className="adminNav">
-          <NavLink
-            to="/admin/users"
-            className={({ isActive }) => `adminNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="adminNavIcon"><FiUsers size={18} /></span>
-            <span>Users</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/projects"
-            className={({ isActive }) => `adminNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="adminNavIcon"><FiFolder size={18} /></span>
-            <span>Projects</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/tasks"
-            className={({ isActive }) => `adminNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="adminNavIcon"><FiCheckSquare size={18} /></span>
-            <span>Tasks</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/analytics"
-            className={({ isActive }) => `adminNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="adminNavIcon"><FiBarChart2 size={18} /></span>
-            <span>Analytics</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/activity"
-            className={({ isActive }) => `adminNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="adminNavIcon"><FiFileText size={18} /></span>
-            <span>Activity Logs</span>
-          </NavLink>
+          {visibleNavItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `adminNavItem ${isActive ? "active" : ""}`
+              }
+            >
+              <span className="adminNavIcon">{item.icon}</span>
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
         </nav>
 
         <div className="adminSidebarFooter">
@@ -86,8 +60,12 @@ export default function AdminLayout() {
       <main className="adminMain">
         <div className="adminMainTop">
           <div>
-            <p className="adminEyebrow">Control Center</p>
-            <h2 className="adminMainTitle">Welcome back, {user?.name || "Admin"}</h2>
+            <p className="adminEyebrow">
+              {user?.role === "SUPERUSER" ? "System Control" : "Control Center"}
+            </p>
+            <h2 className="adminMainTitle">
+              Welcome back, {user?.name || "Admin"}
+            </h2>
             <p className="adminMainSub">
               Manage users, projects, tasks, activity, and platform insights from one place.
             </p>

@@ -28,3 +28,6 @@ class AdminActivityQuerySerializer(serializers.Serializer):
                 data[key] = None
 
         return super().to_internal_value(data)
+
+class AdminActivityExportQuerySerializer(AdminActivityQuerySerializer):
+    format = serializers.ChoiceField(choices=["pdf", "excel"], default="pdf")

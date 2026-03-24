@@ -57,8 +57,8 @@ export default function TaskManager() {
     return tasks.find((t) => t.id === selectedTaskId) || null;
   }, [tasks, selectedTaskId]);
 
-  const projectTasks = useMemo(() => tasks.filter((t) => !!t.project_id), [tasks]);
-  const personalTasks = useMemo(() => tasks.filter((t) => !t.project_id), [tasks]);
+  const projectTasks = tasks;
+  const personalTasks = tasks;
 
   const groupedProjectTasks = useMemo<ProjectTaskGroup[]>(() => {
     const groups = new Map<string, ProjectTaskGroup>();
@@ -115,6 +115,7 @@ export default function TaskManager() {
         params: {
           page: p,
           page_size: pageSize,
+          type: activeTab,
           q: search.trim() || undefined,
           assigned_to: filterUser === "" ? undefined : Number(filterUser),
         },
@@ -160,7 +161,7 @@ export default function TaskManager() {
   useEffect(() => {
     loadTasks(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page, activeTab]);
 
   useEffect(() => {
     setPage(1);

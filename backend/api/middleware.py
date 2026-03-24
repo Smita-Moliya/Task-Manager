@@ -1,8 +1,8 @@
-from sys import path
-
 import jwt
 from django.conf import settings
 from django.http import JsonResponse
+from api.db import users_db
+
 
 class JwtAuthMiddleware:
     def __init__(self, get_response):
@@ -13,7 +13,7 @@ class JwtAuthMiddleware:
             "/api/auth/set-password/",
             "/api/auth/send-reset-link/",
             "/api/auth/google/",
-            "/api/auth/refresh/",   
+            "/api/auth/refresh/",
         }
 
     def __call__(self, request):
@@ -24,11 +24,7 @@ class JwtAuthMiddleware:
         if path in self.PUBLIC_PATHS:
             return self.get_response(request)
 
-        # ✅ only protect /api routes (recommended)
         if not request.path.startswith("/api/"):
-            return self.get_response(request)
-
-        if request.path in self.PUBLIC_PATHS:
             return self.get_response(request)
 
         auth = request.headers.get("Authorization", "")
@@ -41,8 +37,19 @@ class JwtAuthMiddleware:
 
         try:
             payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALG])
-            request.user_id = payload.get("user_id")
-            request.role = payload.get("role")
+            user_id = payload.get("user_id")
+
+            if not user_id:
+                return JsonResponse({"message": "Unauthorized"}, status=401)
+
+            user = users_db.get_user_by_id(user_id)
+            if not user:
+                return JsonResponse({"message": "User not found"}, status=401)
+
+            request.user_id = user["id"]
+            request.user = user
+            request.role = user["role"]
+
         except jwt.ExpiredSignatureError:
             return JsonResponse({"message": "Token expired"}, status=401)
         except jwt.InvalidTokenError:

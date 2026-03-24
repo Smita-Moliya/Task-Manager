@@ -1,0 +1,165 @@
+.analyticsWorkspace {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.analyticsWorkspaceHero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.analyticsWorkspaceEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6d4aff;
+  margin-bottom: 10px;
+}
+
+.analyticsWorkspaceTitle {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.08;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.analyticsWorkspaceSubtitle {
+  margin: 8px 0 0;
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 760px;
+}
+
+.analyticsSectionTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 8px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #eef2f7 0%, #e9edf5 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  flex-wrap: wrap;
+}
+
+.analyticsTabBtn {
+  border: none;
+  background: transparent;
+  color: #42526b;
+  padding: 14px 22px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.analyticsTabBtn svg {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.analyticsTabBtn:hover {
+  background: rgba(255, 255, 255, 0.72);
+  transform: translateY(-1px);
+}
+
+.analyticsTabBtn.active {
+  background: #ffffff;
+  color: #6d4aff;
+  box-shadow:
+    0 8px 22px rgba(31, 41, 55, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.analyticsSectionCard {
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: var(--card);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.analyticsSectionHead {
+  padding: 24px 24px 14px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at top right, rgba(109, 74, 255, 0.08), transparent 28%),
+    var(--card);
+}
+
+.analyticsSectionHead h3 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.analyticsSectionHead p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.analyticsSectionBody {
+  padding: 24px;
+}
+
+.analyticsTabPanel {
+  width: 100%;
+}
+
+.animateTabPanel {
+  animation: analyticsFadeSlide 0.28s ease;
+}
+
+@keyframes analyticsFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .analyticsWorkspaceTitle {
+    font-size: 30px;
+  }
+
+  .analyticsSectionTabs {
+    width: 100%;
+  }
+
+  .analyticsTabBtn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .analyticsSectionHead,
+  .analyticsSectionBody {
+    padding: 18px;
+  }
+
+  .analyticsSectionHead h3 {
+    font-size: 24px;
+  }
+}

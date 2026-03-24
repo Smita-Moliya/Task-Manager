@@ -1,85 +1,51 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics, status
+from rest_framework.response import Response
 
-from api.utils.decorators import require_methods, require_auth, json_required
-from api.utils.permissions import ensure_task_access
-from api.utils.activity import log_activity, COMMENT_ADDED
-
-from api.services import comments_service as cs
-from api.services import me_service as ms
+from api.authentication import CustomJWTAuthentication
+from api.permissions import HasViewPermission, IsAuthenticatedCustom
 from api.serializers.comment_serializer import TaskCommentCreateSerializer
+from api.services.comments_service import (
+    add_task_comment_service,
+    list_task_comments_service,
+)
+from api.services.me_service import get_me_attachments, get_me_comments
 
 
-@csrf_exempt
-@require_methods(["GET", "POST"])
-@require_auth
-def task_comments(request, task_id: int):
-    err = ensure_task_access(request, task_id)
-    if err:
-        return err
+class TaskCommentsView(generics.GenericAPIView):
+    serializer_class = TaskCommentCreateSerializer
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticatedCustom, HasViewPermission]
+    permission_code = "view_tasks"
 
-    if request.method == "GET":
-        comments = cs.get_task_comments(task_id)
-        return JsonResponse({"comments": comments}, status=200)
+    def get(self, request, task_id: int, *args, **kwargs):
+        result = list_task_comments_service(request, task_id)
+        return Response(result, status=status.HTTP_200_OK)
 
-    return _task_comments_create(request, task_id)
+    def post(self, request, task_id: int, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-
-@csrf_exempt
-@require_methods(["POST"])
-@require_auth
-@json_required
-def _task_comments_create(request, body, task_id: int):
-    err = ensure_task_access(request, task_id)
-    if err:
-        return err
-
-    serializer = TaskCommentCreateSerializer(data=body)
-    if not serializer.is_valid():
-        return JsonResponse(
-            {"message": "Validation error", "errors": serializer.errors},
-            status=400
+        result = add_task_comment_service(
+            request=request,
+            task_id=task_id,
+            data=serializer.validated_data,
         )
-
-    user_id = request.user_id
-    comment = serializer.validated_data["comment"]
-
-    created = cs.add_task_comment(task_id, user_id, comment)
-
-    log_activity(
-        task_id=task_id,
-        actor_id=user_id,
-        action=COMMENT_ADDED,
-        message="Comment added",
-        meta={"comment_id": created["id"], "comment": comment[:200]}
-    )
-
-    return JsonResponse({"message": "Comment added ✅", "comment": created}, status=201)
+        return Response(result, status=status.HTTP_201_CREATED)
 
 
-@csrf_exempt
-@require_methods(["GET"])
-@require_auth
-def me_attachments(request):
-    role = getattr(request, "role", None)
-    user_id = getattr(request, "user_id", None)
+class MeAttachmentsView(generics.GenericAPIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticatedCustom]
 
-    if not role or not user_id:
-        return JsonResponse({"message": "Unauthorized"}, status=401)
-
-    attachments = ms.get_me_attachments(role, user_id)
-    return JsonResponse({"attachments": attachments}, status=200)
+    def get(self, request, *args, **kwargs):
+        result = get_me_attachments(request.role, request.user_id)
+        return Response({"attachments": result}, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
-@require_methods(["GET"])
-@require_auth
-def me_comments(request):
-    role = getattr(request, "role", None)
-    user_id = getattr(request, "user_id", None)
+class MeCommentsView(generics.GenericAPIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticatedCustom]
 
-    if not role or not user_id:
-        return JsonResponse({"message": "Unauthorized"}, status=401)
-
-    comments = ms.get_me_comments(role, user_id)
-    return JsonResponse({"comments": comments}, status=200)
+    def get(self, request, *args, **kwargs):
+        result = get_me_comments(request.role, request.user_id)
+        return Response({"comments": result}, status=status.HTTP_200_OK)

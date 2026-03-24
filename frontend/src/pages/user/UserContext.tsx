@@ -61,10 +61,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   async function loadTasks() {
     try {
-      const tasksRes = await api.get("/tasks/");
-      const taskList = Array.isArray(tasksRes.data)
-        ? tasksRes.data
-        : tasksRes.data?.tasks || tasksRes.data?.items || [];
+      setMsg("");
+
+      const tasksRes = await api.get("/user/tasks/");
+      const data = tasksRes.data || {};
+
+      const taskList = Array.isArray(data)
+        ? data
+        : data.tasks || data.items || data.results || [];
+
       setTasks(Array.isArray(taskList) ? taskList : []);
     } catch (e: any) {
       setTasks([]);
@@ -87,7 +92,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setActivityPage(data.page || page);
       setActivityTotalPages(data.total_pages || 1);
       setActivityTotal(data.total || activityList.length || 0);
-    } catch {
+    } catch (e: any) {
       setActivities([]);
       setActivityPage(1);
       setActivityTotalPages(1);

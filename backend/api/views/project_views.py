@@ -1,81 +1,102 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from api.utils.decorators import require_methods, require_auth, require_admin, json_required
-from api.services import project_service as ps
+from rest_framework import generics, status
+from rest_framework.response import Response
 
-@json_required
-@csrf_exempt
-@require_methods(["POST"])
-@require_auth
-@require_admin
-def create_project(request, body):
-    actor_id = request.user_id
-
-    result = ps.create_project_service(body, actor_id)
-    if not result["ok"]:
-        if "errors" in result:
-            return JsonResponse({"errors": result["errors"]}, status=400)
-        return JsonResponse({"message": result["message"]}, status=400)
-
-    return JsonResponse({
-        "message": "Project created successfully",
-        "project": result["project"]
-    }, status=201)
+from api.authentication import CustomJWTAuthentication
+from api.permissions import IsAuthenticatedCustom, HasViewPermission
+from api.serializers.project_serializer import (
+    ProjectCreateUpdateSerializer,
+    ProjectListQuerySerializer,
+)
+from api.services.project_service import (
+    create_project_service,
+    list_projects_service,
+    get_project_detail_service,
+    update_project_service,
+    delete_project_service,
+)
 
 
-@require_methods(["GET"])
-@require_auth
-def list_projects(request):
-    q = (request.GET.get("q") or "").strip()
-    status = (request.GET.get("status") or "").strip() or None
+class ProjectListCreateView(generics.GenericAPIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticatedCustom, HasViewPermission]
+    serializer_class = ProjectCreateUpdateSerializer
+    permission_code = "view_projects"
 
-    result = ps.list_projects_service(q=q, status=status)
-    return JsonResponse({"projects": result["projects"]}, status=200)
+    def get(self, request):
+        serializer = ProjectListQuerySerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
 
+        result = list_projects_service(filters=serializer.validated_data)
+        return Response(result, status=status.HTTP_200_OK)
 
-@require_methods(["GET"])
-@require_auth
-def get_project(request, project_id):
-    result = ps.get_project_detail_service(project_id)
-    if not result["ok"]:
-        return JsonResponse({"message": result["message"]}, status=404)
+    def post(self, request):
+        self.permission_code = "create_project"
 
-    return JsonResponse({
-        "project": result["project"],
-        "summary": result["summary"]
-    }, status=200)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-
-@json_required
-@csrf_exempt
-@require_methods(["PUT"])
-@require_auth
-@require_admin
-def update_project(request, project_id, body):
-    actor_id = request.user_id
-
-    result = ps.update_project_service(project_id, body, actor_id)
-    if not result["ok"]:
-        if "errors" in result:
-            return JsonResponse({"errors": result["errors"]}, status=400)
-        return JsonResponse({"message": result["message"]}, status=404)
-
-    return JsonResponse({
-        "message": "Project updated successfully",
-        "project": result["project"]
-    }, status=200)
+        result = create_project_service(
+            request=request,
+            data=serializer.validated_data,
+        )
+        return Response(result, status=status.HTTP_201_CREATED)
 
 
-@csrf_exempt
-@require_methods(["DELETE"])
-@require_auth
-@require_admin
-def delete_project(request, project_id):
-    actor_id = request.user_id
+class ProjectDetailView(generics.GenericAPIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticatedCustom, HasViewPermission]
+    serializer_class = ProjectCreateUpdateSerializer
+    permission_code = "view_projects"
 
-    result = ps.delete_project_service(project_id, actor_id)
-    if not result["ok"]:
-        code = 404 if result["message"] == "Project not found" else 400
-        return JsonResponse({"message": result["message"]}, status=code)
+    def get(self, request, project_id):
+        result = get_project_detail_service(project_id=project_id)
+        return Response(result, status=status.HTTP_200_OK)
 
-    return JsonResponse({"message": "Project deleted successfully"}, status=200)
+    def put(self, request, project_id):
+        self.permission_code = "edit_project"
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        result = update_project_service(
+            request=request,
+            project_id=project_id,
+            data=serializer.validated_data,
+        )
+        return Response(result, status=status.HTTP_200_OK)
+
+    def patch(self, request, project_id):
+        self.permission_code = "edit_project"
+
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        existing = get_project_detail_service(project_id=project_id)["project"]
+
+        merged_data = {
+            "name": serializer.validated_data.get("name", existing.get("name")),
+            "description": serializer.validated_data.get("description", existing.get("description")),
+            "status": serializer.validated_data.get("status", existing.get("status")),
+            "priority": serializer.validated_data.get("priority", existing.get("priority")),
+            "start_date": serializer.validated_data.get("start_date", existing.get("start_date")),
+            "end_date": serializer.validated_data.get("end_date", existing.get("end_date")),
+        }
+
+        validated_serializer = self.get_serializer(data=merged_data)
+        validated_serializer.is_valid(raise_exception=True)
+
+        result = update_project_service(
+            request=request,
+            project_id=project_id,
+            data=validated_serializer.validated_data,
+        )
+        return Response(result, status=status.HTTP_200_OK)
+
+    def delete(self, request, project_id):
+        self.permission_code = "delete_project"
+
+        result = delete_project_service(
+            request=request,
+            project_id=project_id,
+        )
+        return Response(result, status=status.HTTP_200_OK)

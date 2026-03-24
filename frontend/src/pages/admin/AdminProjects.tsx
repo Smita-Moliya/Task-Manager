@@ -8,6 +8,7 @@ import {
   FiUsers,
   FiArrowRight,
   FiTarget,
+  FiPlus,
 } from "react-icons/fi";
 import { createProject, deleteProject, getProjects } from "../../api/projects";
 import ProjectForm from "../../components/projects/ProjectForm";
@@ -21,23 +22,29 @@ function progressPercent(project: ProjectRow) {
   return Math.round((completed / total) * 100);
 }
 
+function normalizeText(value?: string) {
+  return (value || "").trim().toUpperCase();
+}
+
+function formatLabel(value?: string) {
+  return (value || "—").replace(/_/g, " ");
+}
+
 function getStatusClass(status?: string) {
-  switch ((status || "").toUpperCase()) {
+  switch (normalizeText(status)) {
     case "ACTIVE":
       return "projectBadge statusActive";
     case "COMPLETED":
       return "projectBadge statusCompleted";
-    case "ON_HOLD":
+    case "NOT_STARTED":
       return "projectBadge statusOnHold";
-    case "CANCELLED":
-      return "projectBadge statusCancelled";
     default:
       return "projectBadge";
   }
 }
 
 function getPriorityClass(priority?: string) {
-  switch ((priority || "").toUpperCase()) {
+  switch (normalizeText(priority)) {
     case "HIGH":
       return "projectBadge priorityHigh";
     case "MEDIUM":
@@ -47,6 +54,16 @@ function getPriorityClass(priority?: string) {
     default:
       return "projectBadge";
   }
+}
+
+function deriveStatus(project: ProjectRow): string {
+  const total = Number(project.task_count || 0);
+  const completed = Number(project.completed_count || 0);
+  if (total === 0) return "NOT_STARTED";
+  const pct = (completed / total) * 100;
+  if (pct === 0) return "NOT_STARTED";
+  if (pct < 100) return "ACTIVE";
+  return "COMPLETED";
 }
 
 export default function AdminProjects() {
@@ -62,7 +79,8 @@ export default function AdminProjects() {
     setLoading(true);
     setMsg("");
 
-    const res = await getProjects({ q, status });
+    // Only send `q` to backend — status is filtered on frontend
+    const res = await getProjects({ q });
 
     if (res.ok) {
       setItems(res.data.projects || []);
@@ -77,6 +95,45 @@ export default function AdminProjects() {
   useEffect(() => {
     load();
   }, []);
+
+  // ✅ Frontend status filter using derived status
+  const filtered = useMemo(() => {
+    if (!status) return items;
+    return items.filter((p) => deriveStatus(p) === status);
+  }, [items, status]);
+
+  const stats = useMemo(() => {
+    const totalProjects = items.length;
+    const activeProjects = items.filter(
+      (p) => deriveStatus(p) === "ACTIVE"
+    ).length;
+    const completedProjects = items.filter(
+      (p) => deriveStatus(p) === "COMPLETED"
+    ).length;
+    const totalMembers = items.reduce(
+      (sum, p) => sum + Number(p.member_count || 0),
+      0
+    );
+    const totalTasks = items.reduce(
+      (sum, p) => sum + Number(p.task_count || 0),
+      0
+    );
+    const totalCompletedTasks = items.reduce(
+      (sum, p) => sum + Number(p.completed_count || 0),
+      0
+    );
+
+    const overallProgress =
+      totalTasks > 0 ? Math.round((totalCompletedTasks / totalTasks) * 100) : 0;
+
+    return {
+      totalProjects,
+      activeProjects,
+      completedProjects,
+      totalMembers,
+      overallProgress,
+    };
+  }, [items]);
 
   async function handleCreate(payload: ProjectPayload) {
     setSubmitting(true);
@@ -114,46 +171,26 @@ export default function AdminProjects() {
     setShowForm(false);
   }
 
-  const stats = useMemo(() => {
-    const totalProjects = items.length;
-    const activeProjects = items.filter((p) => p.status === "ACTIVE").length;
-    const completedProjects = items.filter(
-      (p) => p.status === "COMPLETED"
-    ).length;
-    const totalMembers = items.reduce(
-      (sum, p) => sum + Number(p.member_count || 0),
-      0
-    );
-    const totalTasks = items.reduce(
-      (sum, p) => sum + Number(p.task_count || 0),
-      0
-    );
-    const totalCompletedTasks = items.reduce(
-      (sum, p) => sum + Number(p.completed_count || 0),
-      0
-    );
-
-    const overallProgress =
-      totalTasks > 0 ? Math.round((totalCompletedTasks / totalTasks) * 100) : 0;
-
-    return {
-      totalProjects,
-      activeProjects,
-      completedProjects,
-      totalMembers,
-      overallProgress,
-    };
-  }, [items]);
-
   return (
     <div className="adminPage saasProjectsPage">
       <div className="projectTopBar">
-        <button
-          className="uiButton uiButtonPrimary premiumAddButton"
-          onClick={() => setShowForm(true)}
-        >
-          + New Project
-        </button>
+        <div className="projectTopBarContent">
+          <div className="projectTopBarText">
+            <div className="projectTopBarEyebrow">Projects workspace</div>
+            <h2 className="projectTopBarTitle">Manage all projects in one place</h2>
+            <p className="projectTopBarSub">
+              Track project health, completion, members, and delivery progress.
+            </p>
+          </div>
+
+          <button
+            className="uiButton uiButtonPrimary premiumAddButton"
+            onClick={() => setShowForm(true)}
+          >
+            <FiPlus />
+            <span>New Project</span>
+          </button>
+        </div>
       </div>
 
       {msg ? <div className="uiAlert uiAlertInfo">{msg}</div> : null}
@@ -163,7 +200,7 @@ export default function AdminProjects() {
           <div className="statIcon">
             <FiBriefcase />
           </div>
-          <div>
+          <div className="statContent">
             <div className="statLabel">Total Projects</div>
             <div className="statValue">{stats.totalProjects}</div>
           </div>
@@ -173,7 +210,7 @@ export default function AdminProjects() {
           <div className="statIcon">
             <FiClock />
           </div>
-          <div>
+          <div className="statContent">
             <div className="statLabel">Active Projects</div>
             <div className="statValue">{stats.activeProjects}</div>
           </div>
@@ -183,7 +220,7 @@ export default function AdminProjects() {
           <div className="statIcon">
             <FiCheckCircle />
           </div>
-          <div>
+          <div className="statContent">
             <div className="statLabel">Completed</div>
             <div className="statValue">{stats.completedProjects}</div>
           </div>
@@ -193,7 +230,7 @@ export default function AdminProjects() {
           <div className="statIcon">
             <FiUsers />
           </div>
-          <div>
+          <div className="statContent">
             <div className="statLabel">Team Members</div>
             <div className="statValue">{stats.totalMembers}</div>
           </div>
@@ -205,12 +242,13 @@ export default function AdminProjects() {
               <div className="statIcon subtle">
                 <FiTarget />
               </div>
-              <div>
+              <div className="statContent">
                 <div className="statLabel">Overall Progress</div>
                 <div className="statValue">{stats.overallProgress}%</div>
               </div>
             </div>
-            <div className="statTrend">+ better visibility</div>
+
+            <div className="statTrend">Live portfolio health</div>
           </div>
 
           <div className="overallProgressBar">
@@ -248,16 +286,17 @@ export default function AdminProjects() {
           />
         </div>
 
+        {/* ✅ Status filter is now frontend-only — no backend call needed */}
         <div className="premiumFilterSelect">
           <select value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All Status</option>
+            <option value="NOT_STARTED">NOT STARTED</option>
             <option value="ACTIVE">ACTIVE</option>
             <option value="COMPLETED">COMPLETED</option>
-            <option value="ON_HOLD">ON HOLD</option>
-            <option value="CANCELLED">CANCELLED</option>
           </select>
         </div>
 
+        {/* Apply Filters only triggers search (q) — status filters instantly */}
         <button
           className="uiButton uiButtonPrimary premiumApplyButton"
           onClick={load}
@@ -269,9 +308,12 @@ export default function AdminProjects() {
       {loading ? (
         <div className="premiumStateCard">
           <div className="premiumStateTitle">Loading projects...</div>
-          <div className="premiumStateSub">Preparing your project dashboard.</div>
+          <div className="premiumStateSub">
+            Preparing your project dashboard.
+          </div>
         </div>
-      ) : items.length === 0 ? (
+      ) : filtered.length === 0 ? (
+        // ✅ Uses filtered.length — not items.length
         <div className="premiumStateCard">
           <div className="premiumStateTitle">No projects found</div>
           <div className="premiumStateSub">
@@ -279,9 +321,11 @@ export default function AdminProjects() {
           </div>
         </div>
       ) : (
+        // ✅ Renders filtered — not items
         <section className="premiumProjectGrid">
-          {items.map((p) => {
+          {filtered.map((p) => {
             const progress = progressPercent(p);
+            const derived = deriveStatus(p);
 
             return (
               <article key={p.id} className="premiumProjectCard">
@@ -292,7 +336,7 @@ export default function AdminProjects() {
                     <div className="premiumProjectIcon">
                       <FiBriefcase />
                     </div>
-                    <div>
+                    <div className="premiumProjectText">
                       <div className="premiumProjectTitle">{p.name}</div>
                       <div className="premiumProjectSub">
                         {p.description || "No description available for this project."}
@@ -301,9 +345,12 @@ export default function AdminProjects() {
                   </div>
 
                   <div className="premiumProjectBadges">
-                    <span className={getStatusClass(p.status)}>{p.status}</span>
+                    {/* ✅ Status badge uses derived value */}
+                    <span className={getStatusClass(derived)}>
+                      {formatLabel(derived)}
+                    </span>
                     <span className={getPriorityClass(p.priority)}>
-                      {p.priority}
+                      {formatLabel(p.priority)}
                     </span>
                   </div>
                 </div>
@@ -341,9 +388,11 @@ export default function AdminProjects() {
                     <span className="premiumDateLabel">Start Date</span>
                     <span className="premiumDateValue">{p.start_date || "—"}</span>
                   </div>
+
                   <div className="premiumArrowWrap">
                     <FiArrowRight />
                   </div>
+
                   <div className="premiumDateBlock">
                     <span className="premiumDateLabel">End Date</span>
                     <span className="premiumDateValue">{p.end_date || "—"}</span>

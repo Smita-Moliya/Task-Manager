@@ -530,3 +530,570 @@
     align-self: flex-start;
   }
 }
+
+/* =========================
+   UPGRADED DASHBOARD
+   ========================= */
+
+.upgradedDashboardContainer {
+  gap: 22px;
+}
+
+.dashboardMiniBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.upgradedHero {
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 12%, transparent), transparent 35%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card) 98%, white) 0%,
+      color-mix(in srgb, var(--card) 90%, var(--bg)) 100%
+    );
+}
+
+.heroMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.heroMetaPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.heroRightBadge {
+  min-width: 180px;
+  padding: 18px;
+  border-radius: 20px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--primary) 14%, var(--card)) 0%,
+    color-mix(in srgb, var(--card) 94%, var(--bg)) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  box-shadow: var(--shadow);
+}
+
+.heroRightBadgeValue {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.heroRightBadgeText {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* stats */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.statCard {
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 98%, white) 0%,
+    color-mix(in srgb, var(--card) 92%, var(--bg)) 100%
+  );
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.1);
+}
+
+.statCardTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.statIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--card) 86%, var(--bg));
+  border: 1px solid var(--border);
+  font-size: 18px;
+}
+
+.statLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.statHelper {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.tone-success .statIcon {
+  color: #15803d;
+  background: color-mix(in srgb, #22c55e 12%, var(--card));
+}
+.tone-warning .statIcon {
+  color: #b45309;
+  background: color-mix(in srgb, #f59e0b 12%, var(--card));
+}
+.tone-danger .statIcon {
+  color: #dc2626;
+  background: color-mix(in srgb, #ef4444 12%, var(--card));
+}
+.tone-info .statIcon {
+  color: #1d4ed8;
+  background: color-mix(in srgb, #3b82f6 12%, var(--card));
+}
+
+/* top grid */
+.dashboardTopGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.95fr);
+  gap: 18px;
+}
+
+.dashboardSideStack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* focus panel */
+.focusPanel {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+}
+
+.focusPanelHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 22px 24px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+}
+
+.focusHeadChip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.focusPanelBody {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.focusTaskCard {
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 98%, white) 0%,
+    color-mix(in srgb, var(--card) 92%, var(--bg)) 100%
+  );
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.focusTaskCard:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.focusTaskTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.focusTaskTitleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.focusTaskTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.focusTaskProject {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.focusTaskDesc {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.focusTaskMeta {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+}
+
+.focusMetaItem,
+.focusOpenLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.focusMetaItem {
+  color: var(--muted);
+}
+
+.focusOpenLink {
+  color: var(--primary);
+  margin-left: auto;
+}
+
+/* side cards */
+.sideInfoCard {
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.sideInfoHead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.summaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  font-size: 14px;
+  color: var(--text);
+}
+
+.summaryRow strong {
+  font-size: 16px;
+}
+
+.summaryRow.danger {
+  color: #dc2626;
+}
+.summaryRow.info {
+  color: #1d4ed8;
+}
+.summaryRow.success {
+  color: #15803d;
+}
+
+.quickActionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quickActionBtn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quickActionBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+}
+
+.quickActionBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* task workspace */
+.upgradedWorkspaceBody {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.taskTabsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.taskTabBtn {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.taskTabBtn.active {
+  background: linear-gradient(135deg, var(--primary), #3b82f6);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--primary) 24%, transparent);
+}
+
+/* improved controls */
+.upgradedTaskControls {
+  align-items: stretch;
+  gap: 14px;
+}
+
+.taskSearchWrap {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+}
+
+.taskSearchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.upgradedInput {
+  padding-left: 42px !important;
+}
+
+.taskFilterWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.taskFilterIcon {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* task cards */
+.upgradedTaskGrid {
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+}
+
+.upgradedTaskCard {
+  min-height: 220px;
+}
+
+.taskSubMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.taskProjectPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.taskMetaStack {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.taskDuePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+.taskDuePill.tone-danger {
+  color: #dc2626;
+  background: color-mix(in srgb, #ef4444 10%, var(--card));
+  border-color: color-mix(in srgb, #ef4444 20%, var(--border));
+}
+
+.taskDuePill.tone-warning {
+  color: #b45309;
+  background: color-mix(in srgb, #f59e0b 12%, var(--card));
+  border-color: color-mix(in srgb, #f59e0b 20%, var(--border));
+}
+
+.taskDuePill.tone-info {
+  color: #1d4ed8;
+  background: color-mix(in srgb, #3b82f6 12%, var(--card));
+  border-color: color-mix(in srgb, #3b82f6 20%, var(--border));
+}
+
+.taskDuePill.tone-neutral {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+}
+
+.dashboardActivityCard {
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+}
+
+/* responsive */
+@media (max-width: 1200px) {
+  .statsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboardTopGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .heroRightBadge {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 700px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .workspaceHero {
+    flex-direction: column;
+  }
+
+  .upgradedTaskControls {
+    flex-direction: column;
+  }
+
+  .taskFilterWrap {
+    width: 100%;
+  }
+
+  .taskFilterWrap .taskControlsSelect {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .focusTaskTop {
+    flex-direction: column;
+  }
+
+  .focusOpenLink {
+    margin-left: 0;
+  }
+}

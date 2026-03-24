@@ -1,0 +1,1149 @@
+.userTasksBoardPage {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.userTasksBoardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* top overview */
+
+.boardOverviewTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+
+.boardOverviewSubtext {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.boardOverviewBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 28px;
+  border-radius: 28px;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 10%, transparent), transparent 35%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card) 98%, white) 0%,
+      color-mix(in srgb, var(--card) 92%, var(--bg)) 100%
+    );
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.boardOverviewTitleWrap {
+  display: none;
+}
+
+.boardOverviewStats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.boardOverviewStat {
+  min-height: 116px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.boardOverviewStat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+}
+
+.boardOverviewStat span {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+.boardOverviewStat strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.boardOverviewStat.neutral {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f8fafc 78%, var(--card)) 0%,
+    color-mix(in srgb, var(--card) 96%, var(--bg)) 100%
+  );
+  border-color: color-mix(in srgb, #cbd5e1 55%, var(--border));
+}
+
+.boardOverviewStat.pending {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f59e0b 10%, white) 0%,
+    color-mix(in srgb, #f59e0b 6%, var(--card)) 100%
+  );
+  border-color: color-mix(in srgb, #f59e0b 24%, var(--border));
+}
+
+.boardOverviewStat.progress {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #3b82f6 10%, white) 0%,
+    color-mix(in srgb, #3b82f6 6%, var(--card)) 100%
+  );
+  border-color: color-mix(in srgb, #3b82f6 24%, var(--border));
+}
+
+.boardOverviewStat.done {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #22c55e 10%, white) 0%,
+    color-mix(in srgb, #22c55e 6%, var(--card)) 100%
+  );
+  border-color: color-mix(in srgb, #22c55e 24%, var(--border));
+}
+
+
+/* surface */
+.boardSurfaceCard {
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
+}
+
+.boardFiltersHeader {
+  padding: 22px 24px 8px;
+}
+
+.uiCardTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.uiCardSub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.boardSurfaceBody {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 0 24px 24px;
+}
+
+/* filters */
+.boardFiltersPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 97%, white) 0%,
+    color-mix(in srgb, var(--card) 92%, var(--bg)) 100%
+  );
+}
+
+.boardFiltersTopRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boardFilterSearchIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  color: var(--muted);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.taskControlsBoardWrap {
+  flex: 1;
+}
+
+/* try to improve existing TaskControls layout */
+.taskControls,
+.taskControlsInline,
+.taskControlsFilters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.taskControlsSearch {
+  flex: 1;
+  width: auto;
+}
+
+.taskControlsInput {
+  width: 100%;
+  min-width: 260px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.taskControlsSelect {
+  min-width: 150px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.taskControlsInput:focus,
+.taskControlsSelect:focus,
+.boardSurfaceCard input:focus,
+.boardSurfaceCard select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.boardHintRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.boardHintChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.boardHintText {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* board */
+.trelloBoard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.boardColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  min-height: 520px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 95%, var(--bg));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.boardColumn.tone-pending {
+  background: color-mix(in srgb, #f59e0b 9%, var(--card));
+  border-color: color-mix(in srgb, #f59e0b 18%, var(--border));
+}
+
+.boardColumn.tone-progress {
+  background: color-mix(in srgb, #3b82f6 9%, var(--card));
+  border-color: color-mix(in srgb, #3b82f6 18%, var(--border));
+}
+
+.boardColumn.tone-done {
+  background: color-mix(in srgb, #22c55e 9%, var(--card));
+  border-color: color-mix(in srgb, #22c55e 18%, var(--border));
+}
+
+.boardColumnHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.boardColumnTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boardColumnIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.boardColumnIcon.tone-pending {
+  color: #b45309;
+}
+
+.boardColumnIcon.tone-progress {
+  color: #2563eb;
+}
+
+.boardColumnIcon.tone-done {
+  color: #15803d;
+}
+
+.boardColumnTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.boardColumnCount {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.boardColumnMenuBtn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+  color: var(--muted);
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boardColumnMenuBtn:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--primary) 20%, var(--border));
+}
+
+.boardCards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100px;
+}
+
+.boardEmptyState {
+  padding: 22px 16px;
+  border-radius: 18px;
+  border: 1px dashed color-mix(in srgb, var(--border) 80%, transparent);
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.boardTaskCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 98%, white) 0%,
+    color-mix(in srgb, var(--card) 93%, var(--bg)) 100%
+  );
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.boardTaskCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.09);
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+}
+
+.boardTaskCard.isOverdue {
+  border-color: color-mix(in srgb, #ef4444 26%, var(--border));
+}
+
+.boardTaskTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.boardTaskBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.boardTaskBadge.pending {
+  background: color-mix(in srgb, #f59e0b 16%, var(--card));
+  color: #b45309;
+}
+
+.boardTaskBadge.in_progress {
+  background: color-mix(in srgb, #3b82f6 16%, var(--card));
+  color: #1d4ed8;
+}
+
+.boardTaskBadge.done {
+  background: color-mix(in srgb, #22c55e 16%, var(--card));
+  color: #15803d;
+}
+
+.boardTaskOverdueTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #dc2626;
+  background: color-mix(in srgb, #ef4444 12%, var(--card));
+}
+
+.boardTaskTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+.boardTaskDesc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  min-height: 44px;
+  word-break: break-word;
+}
+
+.boardTaskMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.boardTaskMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.boardTaskFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+
+.boardTaskDueDate {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.boardTaskId {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 90%, var(--bg));
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* responsive */
+@media (max-width: 1180px) {
+  .boardOverviewBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .boardOverviewStats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .trelloBoard {
+    grid-template-columns: 1fr;
+  }
+
+  .boardColumn {
+    min-height: unset;
+  }
+}
+
+@media (max-width: 900px) {
+  .boardFiltersTopRow {
+    align-items: flex-start;
+  }
+
+  .taskControls,
+  .taskControlsInline,
+  .taskControlsFilters {
+    flex-wrap: wrap;
+  }
+
+  .taskControlsSearch,
+  .taskControlsInput {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .taskControlsSelect {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .boardOverviewStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .boardOverviewBar,
+  .boardSurfaceBody {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .boardFiltersHeader {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .boardFiltersPanel {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .boardOverviewStats {
+    grid-template-columns: 1fr;
+  }
+
+  .boardOverviewStat {
+    min-width: 100%;
+  }
+
+  .boardHintRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .boardColumn {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .boardTaskCard {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .boardTaskTop,
+  .boardTaskFooter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.taskMainSectionCard {
+  padding: 24px;
+  border-radius: 28px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 98%, white) 0%,
+    color-mix(in srgb, var(--card) 92%, var(--bg)) 100%
+  );
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.taskMainSectionHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.taskMainSectionTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.taskMainSectionSub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.taskAudienceTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 26px;
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+  border: 1px solid var(--border);
+}
+
+.taskAudienceTab {
+  min-width: 180px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 20px;
+  padding: 14px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.taskAudienceTab.active {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary) 16%, white) 0%,
+    color-mix(in srgb, var(--card) 96%, white) 100%
+  );
+  color: #6d28d9;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.taskAudienceTabLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.taskAudienceTabCount {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, #8b5cf6 12%, var(--card));
+  color: #6d28d9;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.taskAudienceTab:not(.active) .taskAudienceTabCount {
+  background: color-mix(in srgb, #3b82f6 10%, var(--card));
+  color: #41608f;
+}
+
+.taskStatusTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.taskStatusSub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.taskStatusGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.taskStatusBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.taskStatusBlockHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+@media (max-width: 768px) {
+  .taskMainSectionCard {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .taskAudienceTabs {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .taskAudienceTab {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+.taskFilterTopBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.taskFilterTopGrow {
+  flex: 1;
+}
+
+.taskMainShellCard {
+  overflow: hidden;
+  border-radius: 30px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 98%, white) 0%,
+    color-mix(in srgb, var(--card) 93%, var(--bg)) 100%
+  );
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
+}
+
+.taskMainShellTabs {
+  padding: 22px 22px 0;
+}
+
+.taskMainShellBody {
+  padding: 20px 0 0;
+}
+
+.taskSectionTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+  border: 1px solid var(--border);
+}
+
+.taskSectionTab {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 14px 18px;
+  min-width: 190px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 800;
+  transition: all 0.2s ease;
+}
+
+.taskSectionTab.active {
+  background: #fff;
+  color: #7c3aed;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.taskSectionTabLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.taskSectionTabCount {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, #8b5cf6 12%, var(--card));
+  color: #7c3aed;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.taskPanelCard {
+  border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  padding: 26px 20px 22px;
+}
+
+.taskPanelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 6px 18px;
+}
+
+.taskPanelTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.taskPanelSub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.taskPanelBadge,
+.taskMiniBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #8b5cf6 20%, var(--border));
+  background: color-mix(in srgb, #8b5cf6 10%, var(--card));
+  color: #7c3aed;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.taskMiniBadge.neutral {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+  color: var(--muted);
+}
+
+.taskProjectGroupList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.taskProjectGroupCard {
+  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 99%, white) 0%,
+    color-mix(in srgb, var(--card) 94%, var(--bg)) 100%
+  );
+  overflow: hidden;
+}
+
+.taskProjectGroupHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 18px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+
+.taskProjectGroupTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.taskProjectGroupIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, #8b5cf6 12%, var(--card));
+  color: #7c3aed;
+  border: 1px solid color-mix(in srgb, #8b5cf6 20%, var(--border));
+  font-size: 22px;
+}
+
+.taskProjectGroupTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.taskProjectGroupTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.taskProjectGroupSub {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.taskProjectGroupStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.taskListTable {
+  width: 100%;
+}
+
+.taskListTableHead {
+  display: grid;
+  grid-template-columns: 2.1fr 1.3fr 1fr 1fr 0.7fr;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.taskListTableBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.taskListRow {
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: grid;
+  grid-template-columns: 2.1fr 1.3fr 1fr 1fr 0.7fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  text-align: left;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.taskListRow:last-child {
+  border-bottom: none;
+}
+
+.taskListRow:hover {
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+}
+
+.taskListCell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.taskListCell strong {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.taskListCell span {
+  font-size: 13px;
+  color: var(--muted);
+  word-break: break-word;
+}
+
+.taskCellTask strong {
+  font-size: 16px;
+}
+
+.taskCellDue strong {
+  font-size: 14px;
+}
+
+.taskStatusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  border: 1px solid var(--border);
+}
+
+.taskStatusPill.pending {
+  color: #b45309;
+  background: color-mix(in srgb, #f59e0b 12%, var(--card));
+  border-color: color-mix(in srgb, #f59e0b 22%, var(--border));
+}
+
+.taskStatusPill.progress {
+  color: #2563eb;
+  background: color-mix(in srgb, #3b82f6 12%, var(--card));
+  border-color: color-mix(in srgb, #3b82f6 22%, var(--border));
+}
+
+.taskStatusPill.done {
+  color: #15803d;
+  background: color-mix(in srgb, #22c55e 12%, var(--card));
+  border-color: color-mix(in srgb, #22c55e 22%, var(--border));
+}
+
+.taskOpenBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 90%, var(--bg));
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.taskEmptyState {
+  margin-top: 8px;
+  padding: 32px 20px;
+  border-radius: 20px;
+  border: 1px dashed color-mix(in srgb, var(--border) 75%, transparent);
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .taskListTableHead,
+  .taskListRow {
+    grid-template-columns: 1.8fr 1.2fr 1fr 0.9fr 0.7fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .taskPanelHeader,
+  .taskProjectGroupHead {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .taskSectionTabs {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .taskSectionTab {
+    width: 100%;
+  }
+
+  .taskListTableHead {
+    display: none;
+  }
+
+  .taskListRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

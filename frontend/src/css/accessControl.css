@@ -1,0 +1,404 @@
+/* =========================
+   ACCESS CONTROL PAGE
+   ========================= */
+
+.acPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 6px 2px 26px;
+}
+
+/* =========================
+   HERO SECTION
+   ========================= */
+
+.acHero {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 24px;
+  border-radius: 26px;
+  border: 1px solid #e5e7eb;
+  background:
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.10), transparent 28%),
+    linear-gradient(135deg, #f8fbff 0%, #eef4ff 48%, #ffffff 100%);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.acHeroContent {
+  max-width: 700px;
+}
+
+.acEyebrow {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7c3aed;
+  margin-bottom: 10px;
+}
+
+.acTitle {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.acSubtitle {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Stats */
+
+.acHeroStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.acStatCard {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.acStatLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.acStatCard strong {
+  font-size: 20px;
+  color: #0f172a;
+}
+
+/* =========================
+   ROLE TABS
+   ========================= */
+
+.acRoleTabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.acRoleTab {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.acRoleTab:hover {
+  transform: translateY(-2px);
+  border-color: #c4b5fd;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.10);
+}
+
+.acRoleTab.active {
+  border-color: #7c3aed;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.08),
+    rgba(255, 255, 255, 0.95)
+  );
+}
+
+.acRoleTabIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(124, 58, 237, 0.12);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: #7c3aed;
+}
+
+.acRoleTabText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.acRoleTabTitle {
+  font-weight: 800;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.acRoleTabSubtitle {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* =========================
+   PANEL
+   ========================= */
+
+.acPanel {
+  border-radius: 24px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+
+.acPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.acPanelTitleWrap {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.acPanelIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(124, 58, 237, 0.10);
+  display: grid;
+  place-items: center;
+  color: #7c3aed;
+  font-size: 18px;
+}
+
+.acPanelTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.acPanelSubtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* =========================
+   ACTION BUTTONS
+   ========================= */
+
+.acPanelActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.acBtn {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.acBtnGhost {
+  border: 1px solid #dbe3ef;
+  background: #ffffff;
+  color: #334155;
+}
+
+.acBtnGhost:hover {
+  background: #f8fafc;
+}
+
+.acBtnPrimary {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+}
+
+.acBtnPrimary:hover {
+  transform: translateY(-1px);
+}
+
+/* =========================
+   PAGE LIST
+   ========================= */
+
+.acList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid #edf2f7;
+  background: #f9fbff;
+  transition: 0.2s ease;
+}
+
+.acRow:hover {
+  border-color: #c7d2fe;
+  background: #f4f7ff;
+}
+
+.acRowLeft {
+  display: flex;
+  gap: 12px;
+}
+
+.acRowIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(99, 102, 241, 0.10);
+  display: grid;
+  place-items: center;
+  color: #4f46e5;
+  font-size: 18px;
+}
+
+.acRowText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.acRowTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.acRowTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.acRowDescription {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.acRowKey {
+  font-size: 11px;
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.08);
+  padding: 3px 8px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+/* Status badge */
+
+.acStatusBadge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.acStatusBadge.isAllowed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.acStatusBadge.isBlocked {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* =========================
+   SWITCH
+   ========================= */
+
+.acSwitchWrap {
+  position: relative;
+  width: 52px;
+  height: 28px;
+}
+
+.acSwitchWrap input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.acSwitch {
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  background: #cbd5e1;
+  position: relative;
+  transition: 0.2s ease;
+}
+
+.acSwitch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: 0.2s ease;
+  box-shadow: 0 3px 6px rgba(15, 23, 42, 0.2);
+}
+
+.acSwitch.on {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+}
+
+.acSwitch.on::after {
+  left: 26px;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 900px) {
+  .acHeroStats {
+    grid-template-columns: 1fr;
+  }
+
+  .acRoleTabs {
+    grid-template-columns: 1fr;
+  }
+
+  .acPanelHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

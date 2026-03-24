@@ -1,0 +1,296 @@
+.adminUsersPage {
+  --au-card-bg: #ffffff;
+  --au-card-border: #e9edf5;
+  --au-card-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+  --au-title: #0f172a;
+  --au-subtitle: #64748b;
+  --au-text: #0f172a;
+  --au-muted: #64748b;
+
+  --au-primary: #2563eb;
+  --au-primary-dark: #1d4ed8;
+  --au-primary-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
+  --au-btn-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+
+  --au-toolbar-bg: #f8fafc;
+  --au-toolbar-border: #edf2f7;
+
+  --au-badge-bg: #ffffff;
+  --au-badge-border: #e2e8f0;
+  --au-badge-text: #334155;
+
+  --au-page-btn-bg: #ffffff;
+  --au-page-btn-border: #dbe3ef;
+  --au-page-btn-text: #0f172a;
+  --au-page-btn-hover-border: #2563eb;
+  --au-page-btn-hover-text: #2563eb;
+  --au-page-btn-hover-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+
+  --au-pagination-info-bg: #f8fafc;
+  --au-pagination-info-border: #e2e8f0;
+  --au-pagination-info-text: #0f172a;
+
+  --au-eyebrow: #2563eb;
+}
+
+:root[data-theme="dark"] .adminUsersPage,
+.dark .adminUsersPage,
+body.dark .adminUsersPage {
+  --au-card-bg: #111827;
+  --au-card-border: rgba(148, 163, 184, 0.16);
+  --au-card-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+
+  --au-title: #f8fafc;
+  --au-subtitle: #94a3b8;
+  --au-text: #e5e7eb;
+  --au-muted: #94a3b8;
+
+  --au-primary: #3b82f6;
+  --au-primary-dark: #2563eb;
+  --au-primary-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+  --au-btn-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+
+  --au-toolbar-bg: #0f172a;
+  --au-toolbar-border: rgba(148, 163, 184, 0.14);
+
+  --au-badge-bg: #111827;
+  --au-badge-border: rgba(148, 163, 184, 0.18);
+  --au-badge-text: #cbd5e1;
+
+  --au-page-btn-bg: #111827;
+  --au-page-btn-border: rgba(148, 163, 184, 0.18);
+  --au-page-btn-text: #e5e7eb;
+  --au-page-btn-hover-border: #60a5fa;
+  --au-page-btn-hover-text: #93c5fd;
+  --au-page-btn-hover-shadow: 0 10px 22px rgba(37, 99, 235, 0.16);
+
+  --au-pagination-info-bg: #0f172a;
+  --au-pagination-info-border: rgba(148, 163, 184, 0.18);
+  --au-pagination-info-text: #e5e7eb;
+
+  --au-eyebrow: #60a5fa;
+}
+
+.adminUsersPage {
+  width: 100%;
+}
+
+.adminUsersCard {
+  background: var(--au-card-bg);
+  border: 1px solid var(--au-card-border);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--au-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.adminUsersHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.adminUsersHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.adminUsersIconWrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--au-primary), var(--au-primary-dark));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: var(--au-primary-shadow);
+  flex-shrink: 0;
+}
+
+.adminUsersTitleWrap {
+  min-width: 0;
+}
+
+.adminUsersEyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--au-eyebrow);
+  margin-bottom: 6px;
+}
+
+.adminUsersTitle {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--au-title);
+}
+
+.adminUsersSubtitle {
+  margin: 6px 0 0;
+  color: var(--au-subtitle);
+  font-size: 14px;
+}
+
+.adminUsersAddBtn {
+  border: none;
+  outline: none;
+  background: linear-gradient(135deg, var(--au-primary), var(--au-primary-dark));
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: var(--au-btn-shadow);
+}
+
+.adminUsersAddBtn:hover {
+  transform: translateY(-1px);
+}
+
+.adminUsersAddBtn:active {
+  transform: translateY(0);
+}
+
+.adminUsersToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--au-toolbar-bg);
+  border: 1px solid var(--au-toolbar-border);
+}
+
+.adminUsersMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--au-text);
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.adminUsersMetaLabel {
+  color: var(--au-muted);
+}
+
+.adminUsersPageBadge {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--au-badge-bg);
+  border: 1px solid var(--au-badge-border);
+  color: var(--au-badge-text);
+  font-size: 14px;
+}
+
+.adminUsersBody {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.adminUsersPagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.adminUsersPageBtn {
+  min-width: 120px;
+  border: 1px solid var(--au-page-btn-border);
+  background: var(--au-page-btn-bg);
+  color: var(--au-page-btn-text);
+  padding: 11px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.adminUsersPageBtn:hover:not(:disabled) {
+  border-color: var(--au-page-btn-hover-border);
+  color: var(--au-page-btn-hover-text);
+  box-shadow: var(--au-page-btn-hover-shadow);
+}
+
+.adminUsersPageBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.adminUsersPaginationInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: var(--au-pagination-info-bg);
+  border: 1px solid var(--au-pagination-info-border);
+  color: var(--au-pagination-info-text);
+}
+
+.adminUsersPaginationText {
+  color: var(--au-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .adminUsersCard {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .adminUsersTitle {
+    font-size: 22px;
+  }
+
+  .adminUsersHeader {
+    align-items: flex-start;
+  }
+
+  .adminUsersAddBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .adminUsersPagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .adminUsersPageBtn,
+  .adminUsersPaginationInfo {
+    width: 100%;
+  }
+
+  .adminUsersPaginationInfo {
+    justify-content: center;
+  }
+}

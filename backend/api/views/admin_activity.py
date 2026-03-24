@@ -1,23 +1,28 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 
-from api.utils.decorators import require_methods, require_auth
-from api.services.activity_service import get_admin_activity_payload
+from api.authentication import CustomJWTAuthentication
+from api.permissions import IsAuthenticatedCustom, HasViewPermission
 from api.serializers.activity_serializer import AdminActivityQuerySerializer
+from api.services.activity_service import get_admin_activity_service
 
 
-@csrf_exempt
-@require_methods(["GET"])
-@require_auth
-def admin_activity(request):
-    if request.role != "ADMIN":
-        return JsonResponse({"message": "Forbidden"}, status=403)
+class AdminActivityView(generics.GenericAPIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticatedCustom, HasViewPermission]
+    serializer_class = AdminActivityQuerySerializer
+    permission_code = "view_admin_activity"
 
-    serializer = AdminActivityQuerySerializer(data=request.GET)
-    if not serializer.is_valid():
-        return JsonResponse(
-            {"message": "Validation error", "errors": serializer.errors},
-            status=400
+    def get(self, request):
+        if request.role not in ("ADMIN", "SUPERUSER"):
+            raise PermissionDenied("Forbidden")
+
+        serializer = self.get_serializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        result = get_admin_activity_service(
+            request=request,
+            filters=serializer.validated_data,
         )
-
-    return JsonResponse(get_admin_activity_payload(serializer.validated_data), status=200)
+        return Response(result, status=status.HTTP_200_OK)

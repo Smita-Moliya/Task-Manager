@@ -1,104 +1,66 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { FiLogOut, FiUser } from "react-icons/fi";
 import { useAuth } from "../auth/useAuth";
-import ThemeToggle from "../components/ThemeToggle";
-import {
-  FiCheckSquare,
-  FiBarChart2,
-  FiClock,
-  FiPaperclip,
-  FiMessageSquare,
-  FiLogOut,
-  FiUser,
-} from "react-icons/fi";
 import "../css/userLayout.css";
+import { userSidebarItems } from "../config/sidebarItems";
+import { getVisibleSidebarItems } from "../utils/sidebar";
 
 export default function UserLayout() {
-  const { user, logout } = useAuth();
+  const { logout, user, pages } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const visibleNavItems = getVisibleSidebarItems(userSidebarItems, pages);
 
   return (
     <div className="userShell">
       <aside className="userSidebar">
-        <div className="userBrand">
-          <div className="userLogo">
-            <FiUser size={18} />
-          </div>
-
-          <div className="userBrandText">
-            <div className="userBrandTitle">TaskFlow User</div>
-            <div className="userBrandSub">{user?.name || "User"}</div>
+        <div className="userSidebarHeader">
+          <div className="userSidebarProfile">
+            <div className="userSidebarAvatar">
+              <FiUser />
+            </div>
+            <div>
+              <div className="userSidebarBrand">TaskFlow User</div>
+              <div className="userSidebarName">{user?.name || "User"}</div>
+            </div>
           </div>
         </div>
 
-        <div className="userNavSectionLabel">Main Menu</div>
+        <div className="userSidebarSectionTitle">WORKSPACE</div>
 
-        <nav className="userNav">
-          <NavLink
-            to="/user/tasks"
-            className={({ isActive }) => `userNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="userNavIcon"><FiCheckSquare size={18} /></span>
-            <span>Tasks</span>
-          </NavLink>
-
-          <NavLink
-            to="/user/insights"
-            className={({ isActive }) => `userNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="userNavIcon"><FiBarChart2 size={18} /></span>
-            <span>Insights</span>
-          </NavLink>
-
-          <NavLink
-            to="/user/activity"
-            className={({ isActive }) => `userNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="userNavIcon"><FiClock size={18} /></span>
-            <span>Activity</span>
-          </NavLink>
-
-          <NavLink
-            to="/user/attachments"
-            className={({ isActive }) => `userNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="userNavIcon"><FiPaperclip size={18} /></span>
-            <span>Attachments</span>
-          </NavLink>
-
-          <NavLink
-            to="/user/comments"
-            className={({ isActive }) => `userNavItem ${isActive ? "active" : ""}`}
-          >
-            <span className="userNavIcon"><FiMessageSquare size={18} /></span>
-            <span>Comments</span>
-          </NavLink>
+        <nav className="userSidebarNav">
+          {visibleNavItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `userSidebarLink ${isActive ? "active" : ""}`
+              }
+            >
+              <span className="userSidebarLinkIcon">{item.icon}</span>
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
         </nav>
 
         <div className="userSidebarFooter">
-          <button className="userSideBtn ghost" onClick={logout}>
-            <FiLogOut size={16} />
-            <span>Logout</span>
+          <button
+            type="button"
+            className="userSidebarLogout"
+            onClick={handleLogout}
+          >
+            <FiLogOut />
+            Logout
           </button>
         </div>
       </aside>
 
- <main className="adminMain">
-        <div className="adminMainTop">
-          <div>
-            <p className="adminEyebrow">Control Center</p>
-            <h2 className="adminMainTitle">Welcome back, {user?.name || "Admin"}</h2>
-            <p className="adminMainSub">
-              Manage tasks, activity, and platform insights from one place.
-            </p>
-          </div>
-
-          <div className="adminTopActions">
-            <ThemeToggle />
-          </div>
-        </div>
-
-        <div className="adminMainContent">
-          <Outlet />
-        </div>
+      <main className="userMain">
+        <Outlet />
       </main>
     </div>
   );

@@ -16,6 +16,8 @@ declare global {
 }
 
 type GoogleAuthData = {
+  pages: {};
+  permissions: {};
   access: string;
   refresh: string;
   user: AuthUser;
